@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace LogTruck.Domain.Enums
 {
-    internal class StatusViagem
+    public enum StatusViagem
     {
+        Planejada = 1,
+        EmAndamento = 2,
+        Concluida = 3,
+        Cancelada = 4
     }
 }

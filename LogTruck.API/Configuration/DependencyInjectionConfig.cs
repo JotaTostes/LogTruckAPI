@@ -1,4 +1,5 @@
-﻿using LogTruck.Infrastructure.Extensions;
+﻿using LogTruck.Application.Extensions;
+using LogTruck.Infrastructure.Extensions;
 using LogTruck.Persistence.Extensions;
 
 namespace LogTruck.API.Configuration
@@ -7,14 +8,12 @@ namespace LogTruck.API.Configuration
     {
         public static IServiceCollection AddProjectDependencies(this IServiceCollection services, IConfiguration configuration)
         {
-            // Application Layer
-            //services.AddApplication();
+            services.AddApplication(configuration);
 
-            // Infrastructure Layer
             services.AddInfrastructure(configuration);
 
-            // Persistence Layer
             services.AddPersistence(configuration);
+
 
             return services;
         }

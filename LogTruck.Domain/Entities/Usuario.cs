@@ -9,18 +9,17 @@ namespace LogTruck.Domain.Entities
 {
     public class Usuario
     {
-        public Guid Id { get; private set; }
-        public string Nome { get; private set; }
-        public string Email { get; private set; }
-        public string SenhaHash { get; private set; }
-        public RoleUsuario Role { get; private set; }
-        public bool Ativo { get; private set; }
+        public Guid Id { get; set; }
+        public string Nome { get; set; }
+        public string Email { get; set; }
+        public string SenhaHash { get; set; }
+        public RoleUsuario Role { get; set; }
+        public bool Ativo { get; set; }
         public Motorista? Motorista { get; set; }
-        public DateTime CriadoEm { get; private set; }
-        public DateTime AtualizadoEm { get; private set; }
+        public DateTime CriadoEm { get; set; }
+        public DateTime AtualizadoEm { get; set; }
 
-        // Construtor protegido para EF Core
-        protected Usuario() { }
+        public Usuario() { }
 
         public Usuario(string nome, string email, string senhaHash, RoleUsuario role)
         {
