@@ -6,22 +6,24 @@ using LogTruck.Application.Interfaces.Services;
 using LogTruck.Application.DTOs.Usuarios;
 using LogTruck.Application.Common.Security;
 using Mapster;
+using MapsterMapper;
 
 namespace LogTruck.Application.Services
 {
     public class UsuarioService : IUsuarioService
     {
         private readonly IUsuarioRepository _repository;
+        private readonly IMapper _mapper;
 
-
-        public UsuarioService(IUsuarioRepository repository)
+        public UsuarioService(IUsuarioRepository repository, IMapper mapper)
         {
             _repository = repository;
+            _mapper = mapper;
         }
 
         public async Task<Guid> CreateAsync(CreateUsuarioDto dto)
         {
-            var usuario = dto.Adapt<Usuario>();
+            var usuario = _mapper.Map<Usuario>(dto);
 
             await _repository.AddAsync(usuario);
             return usuario.Id;
@@ -54,29 +56,17 @@ namespace LogTruck.Application.Services
 
         public async Task<UsuarioDto?> GetByIdAsync(Guid id)
         {
-            var usuario = await _repository.GetByIdAsync(id);
-            if (usuario is null) return null;
+            var usuarioDto = _mapper.Map<UsuarioDto>(await _repository.GetByIdAsync(id));
+            if (usuarioDto is null) return null;
 
-            return new UsuarioDto
-            {
-                Id = usuario.Id,
-                Nome = usuario.Nome,
-                Email = usuario.Email,
-                Role = usuario.Role.ToString()
-            };
+            return usuarioDto;
         }
 
         public async Task<IEnumerable<UsuarioDto>> GetAllAsync()
         {
             var usuarios = await _repository.GetAllAsync();
 
-            return usuarios.Select(u => new UsuarioDto
-            {
-                Id = u.Id,
-                Nome = u.Nome,
-                Email = u.Email,
-                Role = u.Role.ToString()
-            });
+            return _mapper.From(usuarios).AdaptToType<IEnumerable<UsuarioDto>>();
         }
     }
 }

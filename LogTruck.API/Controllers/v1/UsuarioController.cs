@@ -4,6 +4,7 @@ using LogTruck.Application.DTOs.Usuarios;
 using LogTruck.Application.Services;
 using LogTruck.Domain.Entities;
 using Mapster;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -35,6 +36,7 @@ namespace LogTruck.API.Controllers.v1
             return usuario is null ? NotFound() : Ok(usuario);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateUsuarioDto dto)
         {

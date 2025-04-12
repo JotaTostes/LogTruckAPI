@@ -22,6 +22,9 @@ namespace LogTruck.Infrastructure.Repositories
         public async Task<Usuario?> GetByIdAsync(Guid id)
         => await _context.Usuarios.FindAsync(id);
 
+        public async Task<Usuario?> GetByEmailAsync(string email)
+        => await _context.Usuarios.FirstAsync(x => x.Email == email);
+
         public async Task<IEnumerable<Usuario>> GetAllAsync()
             => await _context.Usuarios.ToListAsync();
 

@@ -14,5 +14,6 @@ namespace LogTruck.Application.Interfaces.Repositories
         Task AddAsync(Usuario usuario);
         void Update(Usuario usuario);
         void Delete(Usuario usuario);
+        Task<Usuario?> GetByEmailAsync(string email);
     }
 }

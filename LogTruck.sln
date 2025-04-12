@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogTruck.IntegrationTests",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogTruck.Application", "LogTruck.Application\LogTruck.Application.csproj", "{95FD3514-380F-4FF1-94BA-06F49A257222}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogTruck.Shared", "LogTruck.Shared\LogTruck.Shared.csproj", "{945930D2-F9C7-4436-B023-BA0FBB8F9CE8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,10 @@ Global
 		{95FD3514-380F-4FF1-94BA-06F49A257222}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{95FD3514-380F-4FF1-94BA-06F49A257222}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{95FD3514-380F-4FF1-94BA-06F49A257222}.Release|Any CPU.Build.0 = Release|Any CPU
+		{945930D2-F9C7-4436-B023-BA0FBB8F9CE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{945930D2-F9C7-4436-B023-BA0FBB8F9CE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{945930D2-F9C7-4436-B023-BA0FBB8F9CE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{945930D2-F9C7-4436-B023-BA0FBB8F9CE8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -67,5 +73,6 @@ Global
 		{7A9F0A02-A10C-402C-91C5-AF1B545E3A36} = {391697B6-1EA9-4261-9A89-B56433F4907C}
 		{81FA403B-EF39-4B4A-AD39-A2C4CC2E9389} = {391697B6-1EA9-4261-9A89-B56433F4907C}
 		{95FD3514-380F-4FF1-94BA-06F49A257222} = {8616CED4-E2C5-41EC-BF5D-D52C1FCB9D65}
+		{945930D2-F9C7-4436-B023-BA0FBB8F9CE8} = {8616CED4-E2C5-41EC-BF5D-D52C1FCB9D65}
 	EndGlobalSection
 EndGlobal

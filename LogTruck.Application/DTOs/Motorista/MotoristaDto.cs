@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LogTruck.Application.DTOs
+namespace LogTruck.Application.DTOs.Motorista
 {
     public class MotoristaDto
     {

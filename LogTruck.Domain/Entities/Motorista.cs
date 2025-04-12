@@ -22,7 +22,7 @@ namespace LogTruck.Domain.Entities
 
         // Navegação (viagens feitas por esse motorista)
         public ICollection<Viagem> Viagens { get; private set; }
-        public Usuario Uruario { get; set; }
+        public Usuario Usuario { get; set; }
 
         protected Motorista() { }
 

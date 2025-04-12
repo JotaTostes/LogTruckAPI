@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LogTruck.Application.Common.Mappers.CaminhaoMap
+namespace LogTruck.Application.Common.Mappers
 {
-    public static class CaminhaoMapper
+    public static class CaminhaoMapping
     {
         //public static CaminhaoDto ToDto(Caminhao entity) =>
         //    new()
