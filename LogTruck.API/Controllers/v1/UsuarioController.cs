@@ -1,11 +1,7 @@
 ﻿using Asp.Versioning;
-using LogTruck.Application.Common.Mappers;
 using LogTruck.Application.DTOs.Usuarios;
 using LogTruck.Application.Services;
-using LogTruck.Domain.Entities;
-using Mapster;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LogTruck.API.Controllers.v1
@@ -23,6 +19,7 @@ namespace LogTruck.API.Controllers.v1
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<UsuarioDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll()
         {
             var usuarios = await _usuarioService.GetAllAsync();
@@ -30,6 +27,7 @@ namespace LogTruck.API.Controllers.v1
         }
 
         [HttpGet("{id:guid}")]
+        [ProducesResponseType(typeof(UsuarioDto), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetById(Guid id)
         {
             var usuario = await _usuarioService.GetByIdAsync(id);
@@ -57,12 +55,5 @@ namespace LogTruck.API.Controllers.v1
             var removido = await _usuarioService.Desativar(id);
             return removido ? NoContent() : NotFound();
         }
-
-        //[HttpPost("login")]
-        //public async Task<IActionResult> Login([FromBody] LoginRequestDto login)
-        //{
-        //    var usuario = await _usuarioService.AutenticarAsync(login.Email, login.Senha);
-        //    return usuario is null ? Unauthorized("Credenciais inválidas.") : Ok(usuario);
-        //}
     }
 }
