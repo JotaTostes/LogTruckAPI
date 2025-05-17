@@ -10,28 +10,16 @@ using System.Threading.Tasks;
 
 namespace LogTruck.Infrastructure.Repositories
 {
-    public class UsuarioRepository : IUsuarioRepository
+    public class UsuarioRepository : BaseRepository<Usuario>, IUsuarioRepository
     {
         private readonly AppDbContext _context;
 
-        public UsuarioRepository(AppDbContext context)
+        public UsuarioRepository(AppDbContext context) : base(context)
         {
             _context = context;
         }
 
         public async Task<Usuario?> GetByIdAsync(Guid id)
         => await _context.Usuarios.FindAsync(id);
-
-        public async Task<IEnumerable<Usuario>> GetAllAsync()
-            => await _context.Usuarios.ToListAsync();
-
-        public async Task AddAsync(Usuario usuario)
-            => await _context.Usuarios.AddAsync(usuario);
-
-        public void Update(Usuario usuario)
-            => _context.Usuarios.Update(usuario);
-
-        public void Delete(Usuario usuario)
-            => _context.Usuarios.Remove(usuario);
     }
 }

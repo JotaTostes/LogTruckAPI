@@ -1,10 +1,7 @@
-﻿using LogTruck.Application.Interfaces;
-using LogTruck.Application.Common.Mappers;
-using LogTruck.Domain.Entities;
+﻿using LogTruck.Domain.Entities;
 using LogTruck.Application.Interfaces.Repositories;
 using LogTruck.Application.Interfaces.Services;
 using LogTruck.Application.DTOs.Usuarios;
-using LogTruck.Application.Common.Security;
 using Mapster;
 
 namespace LogTruck.Application.Services
@@ -12,7 +9,6 @@ namespace LogTruck.Application.Services
     public class UsuarioService : IUsuarioService
     {
         private readonly IUsuarioRepository _repository;
-
 
         public UsuarioService(IUsuarioRepository repository)
         {
@@ -24,6 +20,7 @@ namespace LogTruck.Application.Services
             var usuario = dto.Adapt<Usuario>();
 
             await _repository.AddAsync(usuario);
+
             return usuario.Id;
         }
 
@@ -57,26 +54,22 @@ namespace LogTruck.Application.Services
             var usuario = await _repository.GetByIdAsync(id);
             if (usuario is null) return null;
 
-            return new UsuarioDto
-            {
-                Id = usuario.Id,
-                Nome = usuario.Nome,
-                Email = usuario.Email,
-                Role = usuario.Role.ToString()
-            };
+            return usuario.Adapt<UsuarioDto?>();
         }
 
         public async Task<IEnumerable<UsuarioDto>> GetAllAsync()
         {
             var usuarios = await _repository.GetAllAsync();
 
-            return usuarios.Select(u => new UsuarioDto
-            {
-                Id = u.Id,
-                Nome = u.Nome,
-                Email = u.Email,
-                Role = u.Role.ToString()
-            });
+            return usuarios.Adapt<IEnumerable<UsuarioDto>>();
+        }
+
+        public async Task<Usuario?> GetByEmailAsync(string email)
+        {
+            var usuario = await _repository.GetFirstAsync(x => x.Email == email);
+            if (usuario is null) return null;
+
+            return usuario;
         }
     }
 }

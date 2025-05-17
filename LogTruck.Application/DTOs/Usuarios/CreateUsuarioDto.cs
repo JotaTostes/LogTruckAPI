@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace LogTruck.Application.DTOs.Usuarios
+﻿namespace LogTruck.Application.DTOs.Usuarios
 {
     public class CreateUsuarioDto
     {
         public string Nome { get; set; }
         public string Email { get; set; }
-        public string Role { get; set; }
+        public int Role { get; set; }
         public string? Senha { get; set; }
     }
 }

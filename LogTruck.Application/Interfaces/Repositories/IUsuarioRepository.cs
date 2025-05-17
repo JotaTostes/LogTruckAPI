@@ -7,12 +7,8 @@ using System.Threading.Tasks;
 
 namespace LogTruck.Application.Interfaces.Repositories
 {
-    public interface IUsuarioRepository
+    public interface IUsuarioRepository : IBaseRepository<Usuario>
     {
         Task<Usuario?> GetByIdAsync(Guid id);
-        Task<IEnumerable<Usuario>> GetAllAsync();
-        Task AddAsync(Usuario usuario);
-        void Update(Usuario usuario);
-        void Delete(Usuario usuario);
     }
 }

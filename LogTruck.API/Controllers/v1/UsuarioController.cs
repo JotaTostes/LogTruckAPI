@@ -1,9 +1,11 @@
 ﻿using Asp.Versioning;
 using LogTruck.Application.Common.Mappers;
 using LogTruck.Application.DTOs.Usuarios;
+using LogTruck.Application.Interfaces.Services;
 using LogTruck.Application.Services;
 using LogTruck.Domain.Entities;
 using Mapster;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,9 +16,9 @@ namespace LogTruck.API.Controllers.v1
     [Route("api/v{version:apiVersion}/usuarios")]
     public class UsuarioController : ControllerBase
     {
-        private readonly UsuarioService _usuarioService;
+        private readonly IUsuarioService _usuarioService;
 
-        public UsuarioController(UsuarioService usuarioService)
+        public UsuarioController(IUsuarioService usuarioService)
         {
             _usuarioService = usuarioService;
         }
@@ -35,6 +37,7 @@ namespace LogTruck.API.Controllers.v1
             return usuario is null ? NotFound() : Ok(usuario);
         }
 
+        [Authorize(Roles = "Administrador")]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateUsuarioDto dto)
         {
@@ -55,12 +58,5 @@ namespace LogTruck.API.Controllers.v1
             var removido = await _usuarioService.Desativar(id);
             return removido ? NoContent() : NotFound();
         }
-
-        //[HttpPost("login")]
-        //public async Task<IActionResult> Login([FromBody] LoginRequestDto login)
-        //{
-        //    var usuario = await _usuarioService.AutenticarAsync(login.Email, login.Senha);
-        //    return usuario is null ? Unauthorized("Credenciais inválidas.") : Ok(usuario);
-        //}
     }
 }

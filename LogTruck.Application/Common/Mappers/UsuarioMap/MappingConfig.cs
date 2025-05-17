@@ -28,7 +28,7 @@ namespace LogTruck.Application.Common.Mappers.UsuarioMap
                 .Map(dest => dest.Nome, src => src.Nome)
                 .Map(dest => dest.Email, src => src.Email)
                 .Map(dest => dest.SenhaHash, src => PasswordHashHelper.Hash(src.Senha))
-                .Map(dest => dest.Role, src => Enum.Parse<RoleUsuario>(src.Role))
+                .Map(dest => dest.Role, src => (RoleUsuario)src.Role)
                 .Map(dest => dest.Ativo, _ => true)
                 .Map(dest => dest.CriadoEm, _ => DateTime.UtcNow)
                 .Map(dest => dest.AtualizadoEm, _ => DateTime.UtcNow)

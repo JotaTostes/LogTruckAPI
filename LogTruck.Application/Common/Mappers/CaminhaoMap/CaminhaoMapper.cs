@@ -1,4 +1,7 @@
-﻿using LogTruck.Domain.Entities;
+﻿using LogTruck.Application.DTOs;
+using LogTruck.Application.DTOs.Usuarios;
+using LogTruck.Domain.Entities;
+using Mapster;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,26 +10,13 @@ using System.Threading.Tasks;
 
 namespace LogTruck.Application.Common.Mappers.CaminhaoMap
 {
-    public static class CaminhaoMapper
+    public static class MappingConfig
     {
-        //public static CaminhaoDto ToDto(Caminhao entity) =>
-        //    new()
-        //    {
-        //        Id = entity.Id,
-        //        Placa = entity.Placa,
-        //        Modelo = entity.Modelo,
-        //        Ano = entity.Ano,
-        //        CapacidadeCargaKg = entity.CapacidadeCargaKg
-        //    };
-
-        //public static Caminhao ToEntity(CaminhaoDto dto) =>
-        //    new()
-        //    {
-        //        Id = dto.Id,
-        //        Placa = dto.Placa,
-        //        Modelo = dto.Modelo,
-        //        Ano = dto.Ano,
-        //        CapacidadeCargaKg = dto.CapacidadeCargaKg
-        //    };
+        public static void RegisterMappings()
+        {
+            TypeAdapterConfig<MotoristaDto, Motorista>
+                .NewConfig()
+                .Map(dest => dest.Uruario, src => src.Usuario);
+        }
     }
 }
