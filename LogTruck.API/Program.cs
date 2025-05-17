@@ -1,6 +1,5 @@
 using LogTruck.API.Configuration;
 using LogTruck.API.Configurations;
-using LogTruck.Application.Common.Mappers.UsuarioMap;
 using Mapster;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,7 +9,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerWithVersioning();
-MappingConfig.RegisterMappings();
 builder.Services.AddMapster();
 builder.Services.AddOpenApi();
 
@@ -26,6 +24,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 app.UseSwaggerWithVersioning();
 

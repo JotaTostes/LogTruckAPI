@@ -23,6 +23,7 @@ namespace LogTruck.API.Controllers.v1
             _tokenService = tokenService;
         }
 
+        [AllowAnonymous]
         [HttpPost("login")]
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginRequestDto loginRequest)

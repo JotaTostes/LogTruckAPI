@@ -8,22 +8,23 @@ using System.Text;
 using System.Threading.Tasks;
 using LogTruck.Application.Common.Security;
 using LogTruck.Domain.Enums;
+using LogTruck.Application.DTOs.Login;
 
-namespace LogTruck.Application.Common.Mappers.UsuarioMap
+namespace LogTruck.Application.Common.Mappers
 {
-    public static class MappingConfig
+    public class UsuarioMapping : IRegister
     {
-        public static void RegisterMappings()
+        public void Register(TypeAdapterConfig config)
         {
-            TypeAdapterConfig<UsuarioDto, Usuario>
-                .NewConfig()
+                config
+                .NewConfig<UsuarioDto,Usuario>()
                 .Map(dest => dest.Motorista, src => src.Motorista)
                 .Ignore(dest => dest.SenhaHash)
                 .Ignore(dest => dest.CriadoEm)
                 .Ignore(dest => dest.AtualizadoEm);
 
-            TypeAdapterConfig<CreateUsuarioDto, Usuario>
-                .NewConfig()
+                config
+                .NewConfig<CreateUsuarioDto, Usuario>()
                 .Map(dest => dest.Id, _ => Guid.NewGuid())
                 .Map(dest => dest.Nome, src => src.Nome)
                 .Map(dest => dest.Email, src => src.Email)
