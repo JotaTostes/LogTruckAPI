@@ -1,9 +1,4 @@
-﻿using LogTruck.Application.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using LogTruck.Application.DTOs.Motorista;
 
 namespace LogTruck.Application.Interfaces.Services
 {

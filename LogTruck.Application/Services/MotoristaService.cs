@@ -1,13 +1,7 @@
-﻿using LogTruck.Application.DTOs;
+﻿using LogTruck.Application.DTOs.Motorista;
 using LogTruck.Application.Interfaces.Repositories;
 using LogTruck.Application.Interfaces.Services;
-using LogTruck.Domain.Entities;
 using Mapster;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LogTruck.Application.Services
 {

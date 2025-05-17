@@ -25,7 +25,6 @@ namespace LogTruck.API.Controllers.v1
 
         [AllowAnonymous]
         [HttpPost("login")]
-        [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginRequestDto loginRequest)
         {
             var usuario = await _usuarioService.GetByEmailAsync(loginRequest.Email);

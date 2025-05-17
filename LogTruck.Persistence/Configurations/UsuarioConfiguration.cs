@@ -21,7 +21,7 @@ namespace LogTruck.Persistence.Configurations
                    .HasMaxLength(100);
 
             builder.HasOne(u => u.Motorista)
-                   .WithOne(m => m.Uruario)
+                   .WithOne(m => m.Usuario)
                    .HasForeignKey<Motorista>(m => m.UsuarioId);
         }
     }
