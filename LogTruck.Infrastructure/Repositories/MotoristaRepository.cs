@@ -10,23 +10,14 @@ using System.Threading.Tasks;
 
 namespace LogTruck.Infrastructure.Repositories
 {
-    public class MotoristaRepository : IMotoristaRepository
+    public class MotoristaRepository : BaseRepository<Motorista>,IMotoristaRepository
     {
         private readonly AppDbContext _context;
 
-        public MotoristaRepository(AppDbContext context)
+        public MotoristaRepository(AppDbContext context) : base(context)
         {
             _context = context;
         }
-
         public async Task<Motorista?> GetByIdAsync(Guid id) => await _context.Motoristas.FindAsync(id);
-
-        public async Task<IEnumerable<Motorista>> GetAllAsync() => await _context.Motoristas.ToListAsync();
-
-        public async Task AddAsync(Motorista motorista) => await _context.Motoristas.AddAsync(motorista);
-
-        public void Update(Motorista motorista) => _context.Motoristas.Update(motorista);
-
-        public void Delete(Motorista motorista) => _context.Motoristas.Remove(motorista);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using LogTruck.Application.DTOs.Usuarios;
+using LogTruck.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,6 @@ namespace LogTruck.Application.Interfaces.Services
         Task<bool> Desativar(Guid id);
         Task<UsuarioDto?> GetByIdAsync(Guid id);
         Task<IEnumerable<UsuarioDto>> GetAllAsync();
+        Task<Usuario?> GetByEmailAsync(string email);
     }
 }

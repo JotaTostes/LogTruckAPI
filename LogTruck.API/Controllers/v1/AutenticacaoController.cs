@@ -14,22 +14,38 @@ namespace LogTruck.API.Controllers.v1
     [Route("api/v{version:apiVersion}/auth")]
     public class AutenticacaoController : ControllerBase
     {
-        private readonly IAutenticacaoService _autenticacaoService;
+        private readonly IUsuarioService _usuarioService;
+        private readonly TokenService _tokenService;
 
-        public AutenticacaoController(IAutenticacaoService autenticacaoService)
+        public AutenticacaoController(IUsuarioService usuarioService, TokenService tokenService)
         {
-            _autenticacaoService = autenticacaoService;
+            _usuarioService = usuarioService;
+            _tokenService = tokenService;
         }
 
         [AllowAnonymous]
         [HttpPost("login")]
+        [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginRequestDto loginRequest)
         {
-            var loginResponse = await _autenticacaoService.Login(loginRequest);
+            var usuario = await _usuarioService.GetByEmailAsync(loginRequest.Email);
 
-            return loginResponse.Sucesso
-                ? Ok(loginResponse)
-                : Unauthorized(loginResponse);
+            if (usuario == null || !PasswordHashHelper.Verify(usuario.SenhaHash, loginRequest.Senha))
+                return Unauthorized(new { mensagem = "Credenciais inválidas." });
+
+            var token = _tokenService.GerarToken(usuario);
+
+            return Ok(new
+            {
+                token,
+                usuario = new
+                {
+                    usuario.Id,
+                    usuario.Nome,
+                    usuario.Email,
+                    usuario.Role
+                }
+            });
         }
     }
 }

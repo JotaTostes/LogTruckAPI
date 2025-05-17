@@ -1,6 +1,6 @@
 ﻿using Asp.Versioning;
-using LogTruck.Application.Common.Mappers;
 using LogTruck.Application.DTOs.Usuarios;
+using LogTruck.Application.Interfaces.Services;
 using LogTruck.Application.Services;
 using LogTruck.Domain.Entities;
 using Mapster;
@@ -15,14 +15,15 @@ namespace LogTruck.API.Controllers.v1
     [Route("api/v{version:apiVersion}/usuarios")]
     public class UsuarioController : ControllerBase
     {
-        private readonly UsuarioService _usuarioService;
+        private readonly IUsuarioService _usuarioService;
 
-        public UsuarioController(UsuarioService usuarioService)
+        public UsuarioController(IUsuarioService usuarioService)
         {
             _usuarioService = usuarioService;
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<UsuarioDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll()
         {
             var usuarios = await _usuarioService.GetAllAsync();
@@ -30,13 +31,14 @@ namespace LogTruck.API.Controllers.v1
         }
 
         [HttpGet("{id:guid}")]
+        [ProducesResponseType(typeof(UsuarioDto), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetById(Guid id)
         {
             var usuario = await _usuarioService.GetByIdAsync(id);
             return usuario is null ? NotFound() : Ok(usuario);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Administrador")]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateUsuarioDto dto)
         {
@@ -57,12 +59,5 @@ namespace LogTruck.API.Controllers.v1
             var removido = await _usuarioService.Desativar(id);
             return removido ? NoContent() : NotFound();
         }
-
-        //[HttpPost("login")]
-        //public async Task<IActionResult> Login([FromBody] LoginRequestDto login)
-        //{
-        //    var usuario = await _usuarioService.AutenticarAsync(login.Email, login.Senha);
-        //    return usuario is null ? Unauthorized("Credenciais inválidas.") : Ok(usuario);
-        //}
     }
 }
