@@ -9,7 +9,7 @@ namespace LogTruck.API.Configuration
         public static IServiceCollection AddMapperConfiguration(this IServiceCollection services)
         {
             var config = TypeAdapterConfig.GlobalSettings;
-            MappingConfig.RegisterMappings(config);
+            RegisterMappings.Register(config);
 
             services.AddSingleton(config);
             services.AddScoped<IMapper, ServiceMapper>();

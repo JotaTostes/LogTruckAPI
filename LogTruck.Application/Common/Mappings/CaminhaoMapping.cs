@@ -1,4 +1,5 @@
 ﻿using LogTruck.Application.DTOs;
+using LogTruck.Application.DTOs.Motorista;
 using LogTruck.Application.DTOs.Usuarios;
 using LogTruck.Domain.Entities;
 using Mapster;
@@ -16,7 +17,7 @@ namespace LogTruck.Application.Common.Mappers
         {
             TypeAdapterConfig<MotoristaDto, Motorista>
                 .NewConfig()
-                .Map(dest => dest.Uruario, src => src.Usuario);
+                .Map(dest => dest.Usuario, src => src.Usuario);
         }
     }
 }

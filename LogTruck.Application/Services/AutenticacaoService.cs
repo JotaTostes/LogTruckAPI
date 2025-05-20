@@ -13,18 +13,18 @@ namespace LogTruck.Application.Services
 {
     public class AutenticacaoService : IAutenticacaoService
     {
-        private readonly IUsuarioRepository _usuarioRepository;
+        private readonly IUsuarioService _usuarioService;
         private readonly TokenService _tokenService;
 
-        public AutenticacaoService(IUsuarioRepository usuarioRepository, TokenService tokenService)
+        public AutenticacaoService(IUsuarioService usuarioService, TokenService tokenService)
         {
-            _usuarioRepository = usuarioRepository;
+            _usuarioService = usuarioService;
             _tokenService = tokenService;
         }
 
         public async Task<LoginResponseDto> Login(LoginRequestDto loginDto)
         {
-            var usuario = await _usuarioRepository.GetByEmailAsync(loginDto.Email);
+            var usuario = await _usuarioService.GetByEmailAsync(loginDto.Email);
             var senhaValida = PasswordHashHelper.Verify(usuario.SenhaHash, loginDto.Senha);
 
             if (usuario == null || !senhaValida)

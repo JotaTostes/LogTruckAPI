@@ -41,10 +41,20 @@ namespace LogTruck.Domain.Entities
             Viagens = new List<Viagem>();
         }
 
-        public void Atualizar(string nome, string telefone)
+        public void Atualizar(string? nome, string? telefone, string? cnh, DateTime? dataNascimento)
         {
-            Nome = nome;
-            Telefone = telefone;
+            if (!string.IsNullOrWhiteSpace(nome))
+                Nome = nome;
+
+            if (!string.IsNullOrWhiteSpace(telefone))
+                Telefone = telefone;
+
+            if (!string.IsNullOrWhiteSpace(cnh))
+                CNH = cnh;
+
+            if (dataNascimento.HasValue && dataNascimento.Value != default)
+                DataNascimento = dataNascimento.Value;
+
             AtualizadoEm = DateTime.UtcNow;
         }
 

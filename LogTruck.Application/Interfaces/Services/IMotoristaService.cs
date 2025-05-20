@@ -5,9 +5,9 @@ namespace LogTruck.Application.Interfaces.Services
     public interface IMotoristaService
     {
         Task<IEnumerable<MotoristaDto>> ObterTodosAsync();
-        Task<MotoristaDto> ObterPorIdAsync(Guid id);
-        //Task<Guid> CriarAsync(CriarMotoristaDto dto);
-        //Task AtualizarAsync(Guid id, AtualizarMotoristaDto dto);
-        //Task DeletarAsync(Guid id);
+        Task<MotoristaDto> GetById(Guid id);
+        Task<Guid> CreateAsync(CreateMotoristaDto dto);
+        Task UpdateAsync(AtualizarMotoristaDto dto);
+        Task DeleteAsync(Guid id);
     }
 }

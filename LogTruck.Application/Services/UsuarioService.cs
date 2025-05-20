@@ -10,17 +10,15 @@ namespace LogTruck.Application.Services
     public class UsuarioService : IUsuarioService
     {
         private readonly IUsuarioRepository _repository;
-        private readonly IMapper _mapper;
 
-        public UsuarioService(IUsuarioRepository repository)
+        public UsuarioService(IUsuarioRepository repository )
         {
             _repository = repository;
-            _mapper = mapper;
         }
 
         public async Task<Guid> CreateAsync(CreateUsuarioDto dto)
         {
-            var usuario = _mapper.Map<Usuario>(dto);
+            var usuario = dto.Adapt<Usuario>();
 
             await _repository.AddAsync(usuario);
 
@@ -54,8 +52,8 @@ namespace LogTruck.Application.Services
 
         public async Task<UsuarioDto?> GetByIdAsync(Guid id)
         {
-            var usuarioDto = _mapper.Map<UsuarioDto>(await _repository.GetByIdAsync(id));
-            if (usuarioDto is null) return null;
+            var usuario = await _repository.GetByIdAsync(id);
+            if (usuario is null) return null;
 
             return usuario.Adapt<UsuarioDto?>();
         }

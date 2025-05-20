@@ -1,6 +1,7 @@
 ﻿using LogTruck.Application.DTOs.Motorista;
 using LogTruck.Application.Interfaces.Repositories;
 using LogTruck.Application.Interfaces.Services;
+using LogTruck.Domain.Entities;
 using Mapster;
 
 namespace LogTruck.Application.Services
@@ -20,7 +21,7 @@ namespace LogTruck.Application.Services
             return motoristas.Adapt<IEnumerable<MotoristaDto>>();
         }
 
-        public async Task<MotoristaDto> ObterPorIdAsync(Guid id)
+        public async Task<MotoristaDto> GetById(Guid id)
         {
             var motorista = await _motoristaRepository.GetByIdAsync(id)
                             ?? throw new Exception("Motorista não encontrado.");
@@ -28,25 +29,34 @@ namespace LogTruck.Application.Services
             return motorista.Adapt<MotoristaDto>();
         }
 
-        //public async Task<Guid> CriarAsync(CriarMotoristaDto dto)
-        //{
-        //    var motorista = new Motorista(dto.Nome, dto.Cpf, dto.DataNascimento);
-        //    await _motoristaRepository.AdicionarAsync(motorista);
-        //    return motorista.Id;
-        //}
+        public async Task<Guid> CreateAsync(CreateMotoristaDto dto)
+        {
+            var motorista = dto.Adapt<Motorista>();
+            await _motoristaRepository.AddAsync(motorista);
+            return motorista.Id;
+        }
 
-        //public async Task AtualizarAsync(Guid id, AtualizarMotoristaDto dto)
-        //{
-        //    var motorista = await _motoristaRepository.ObterPorIdAsync(id)
-        //                    ?? throw new Exception("Motorista não encontrado.");
+        public async Task UpdateAsync(AtualizarMotoristaDto dto)
+        {
+            var motoristaAtualizar = await _motoristaRepository.GetByIdAsync(dto.Id)
+                            ?? throw new Exception("Motorista não encontrado.");
 
-        //    motorista.AtualizarDados(dto.Nome, dto.Cpf, dto.DataNascimento);
-        //    await _motoristaRepository.AtualizarAsync(motorista);
-        //}
+            motoristaAtualizar.Atualizar(
+                dto.Nome,
+                dto.Telefone,
+                dto.Cnh,
+                dto.DataNascimento.GetValueOrDefault()
+            );
+            _motoristaRepository.Update(motoristaAtualizar);
+        }
 
-        //public async Task DeletarAsync(Guid id)
-        //{
-        //    await _motoristaRepository.RemoverAsync(id);
-        //}
+        public async Task DeleteAsync(Guid id)
+        {
+            var motorista = await _motoristaRepository.GetByIdAsync(id)
+                            ?? throw new Exception("Motorista não encontrado.");
+
+            motorista.Desativar();
+           _motoristaRepository.Update(motorista);
+        }
     }
 }

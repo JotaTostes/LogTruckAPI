@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.IdentityModel.Tokens;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,8 +9,11 @@ namespace LogTruck.Application.DTOs.Motorista
 {
     public class AtualizarMotoristaDto
     {
-        public string Nome { get; set; }
-        public string Cpf { get; set; }
-        public DateTime DataNascimento { get; set; }
+        public Guid Id { get; set; }
+        public string? Nome { get; set; }
+        public DateTime? DataNascimento { get; set; }
+        public string? Cnh { get; set; }
+        public string? Telefone { get; set; }
+        
     }
 }

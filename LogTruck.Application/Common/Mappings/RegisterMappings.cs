@@ -2,9 +2,9 @@
 
 namespace LogTruck.Application.Common.Mappers
 {
-    public class MappingConfig
+    public class RegisterMappings
     {
-        public static void RegisterMappings(TypeAdapterConfig config)
+        public static void Register(TypeAdapterConfig config)
         {
             config.Scan(typeof(UsuarioMapping).Assembly);
             config.Scan(typeof(MotoristaMapping).Assembly);
