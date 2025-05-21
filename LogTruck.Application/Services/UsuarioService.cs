@@ -30,7 +30,7 @@ namespace LogTruck.Application.Services
             var usuario = await _repository.GetByIdAsync(id);
 
             if (usuario == null)
-                throw new Exception("Usuário não encontrado.");
+                throw new KeyNotFoundException("Usuário não encontrado.");
 
             usuario.Atualizar(dto.Nome, dto.Email, dto.Role);
 
@@ -42,7 +42,7 @@ namespace LogTruck.Application.Services
             var usuario = await _repository.GetByIdAsync(id);
 
             if (usuario == null)
-                throw new Exception("Usuário não encontrado.");
+                throw new KeyNotFoundException("Usuário não encontrado.");
 
             usuario.Desativar();
             _repository.Update(usuario);

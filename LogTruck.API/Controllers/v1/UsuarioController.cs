@@ -12,7 +12,7 @@ namespace LogTruck.API.Controllers.v1
 {
     [ApiController]
     [ApiVersion("1.0")]
-    [Route("api/v{version:apiVersion}/usuarios")]
+    [Route("api/v{version:apiVersion}/usuario")]
     public class UsuarioController : ControllerBase
     {
         private readonly IUsuarioService _usuarioService;

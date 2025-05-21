@@ -20,7 +20,7 @@ public class TokenService
     public string GerarToken(Usuario usuario)
     {
         if (usuario == null)
-            throw new ArgumentNullException(nameof(usuario));
+            throw new ArgumentException(nameof(usuario));
 
         if (string.IsNullOrEmpty(_jwtSettings.Secret))
             throw new InvalidOperationException("A chave secreta JWT não está configurada");

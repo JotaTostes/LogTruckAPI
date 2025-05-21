@@ -1,10 +1,5 @@
 ﻿using LogTruck.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LogTruck.Persistence.Context
 {
@@ -24,6 +19,10 @@ namespace LogTruck.Persistence.Context
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Usuario>().HasQueryFilter(u => u.Ativo);
+            modelBuilder.Entity<Motorista>().HasQueryFilter(m => m.Ativo);
+            modelBuilder.Entity<Caminhao>().HasQueryFilter(c => c.Ativo);
         }
     }
 }

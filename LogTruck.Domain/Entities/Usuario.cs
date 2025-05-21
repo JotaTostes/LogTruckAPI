@@ -1,9 +1,4 @@
 ﻿using LogTruck.Domain.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LogTruck.Domain.Entities
 {
@@ -13,6 +8,7 @@ namespace LogTruck.Domain.Entities
         public string Nome { get; set; }
         public string Email { get; set; }
         public string SenhaHash { get; set; }
+        public string Cpf { get; set; }
         public RoleUsuario Role { get; set; }
         public bool Ativo { get; set; }
         public Motorista? Motorista { get; set; }

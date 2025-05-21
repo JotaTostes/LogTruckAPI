@@ -1,11 +1,6 @@
 ﻿using LogTruck.Application.DTOs.Motorista;
 using LogTruck.Domain.Entities;
 using Mapster;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LogTruck.Application.Common.Mappers
 {
@@ -22,6 +17,14 @@ namespace LogTruck.Application.Common.Mappers
                   .Ignore(dest => dest.CriadoEm)
                   .Ignore(dest => dest.AtualizadoEm)
                   .Ignore(dest => dest.Usuario);
+
+            config.NewConfig<CreateMotoristaDto, Motorista>()
+                .Map(dest => dest.CriadoEm, src => DateTime.UtcNow)
+                .Map(dest => dest.Ativo, _ => true)
+                .Ignore(dest => dest.AtualizadoEm)
+                .Ignore(dest => dest.Id)
+                .Ignore(dest => dest.Viagens)
+                .Ignore(dest => dest.Usuario);
         }
     }
 }

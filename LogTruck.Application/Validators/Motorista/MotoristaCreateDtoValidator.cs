@@ -10,14 +10,14 @@ namespace LogTruck.Application.Validators.Motorista
             RuleFor(x => x.UsuarioId)
                 .NotEmpty().WithMessage("Usuário é obrigatório.");
 
-            RuleFor(x => x.Nome)
-                .NotEmpty().WithMessage("Nome é obrigatório.")
-                .MaximumLength(150).WithMessage("Nome pode ter no máximo 150 caracteres.");
+            //RuleFor(x => x.Nome)
+            //    .NotEmpty().WithMessage("Nome é obrigatório.")
+            //    .MaximumLength(150).WithMessage("Nome pode ter no máximo 150 caracteres.");
 
-            RuleFor(x => x.CPF)
-                .NotEmpty().WithMessage("CPF é obrigatório.")
-                .Length(11).WithMessage("CPF deve conter 11 dígitos.")
-                .Matches(@"^\d{11}$").WithMessage("CPF deve conter apenas números.");
+            //RuleFor(x => x.CPF)
+            //    .NotEmpty().WithMessage("CPF é obrigatório.")
+            //    .Length(11).WithMessage("CPF deve conter 11 dígitos.")
+            //    .Matches(@"^\d{11}$").WithMessage("CPF deve conter apenas números.");
 
             RuleFor(x => x.CNH)
                 .NotEmpty().WithMessage("CNH é obrigatória.")

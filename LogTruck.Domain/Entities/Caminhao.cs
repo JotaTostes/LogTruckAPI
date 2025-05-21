@@ -38,12 +38,23 @@ namespace LogTruck.Domain.Entities
             Viagens = new List<Viagem>();
         }
 
-        public void Atualizar(string modelo, string marca, int ano, double capacidade)
+        public void Atualizar(string? marca, string? modelo, string? placa, int? ano, double? capacidade)
         {
-            Modelo = modelo;
-            Marca = marca;
-            Ano = ano;
-            CapacidadeToneladas = capacidade;
+            if (!string.IsNullOrWhiteSpace(marca))
+                Marca = marca;
+
+            if (!string.IsNullOrWhiteSpace(modelo))
+                Modelo = modelo;
+
+            if (!string.IsNullOrWhiteSpace(placa))
+                Placa = placa;
+
+            if (ano.HasValue && ano.Value > 0)
+                Ano = ano.Value;
+
+            if (capacidade.HasValue && capacidade.Value > 0)
+                CapacidadeToneladas = capacidade.Value;
+
             AtualizadoEm = DateTime.UtcNow;
         }
 

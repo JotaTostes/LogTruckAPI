@@ -9,22 +9,22 @@ namespace LogTruck.Domain.Entities
     public class Motorista
     {
         public Guid Id { get; private set; }
-        public Guid UsuarioId { get; private set; }
-        public string Nome { get; private set; }
-        public string CPF { get; private set; }
-        public string CNH { get; private set; }
-        public DateTime DataNascimento { get; private set; }
-        public string Telefone { get; private set; }
-        public bool Ativo { get; private set; }
+        public Guid UsuarioId { get; set; }
+        public string Nome { get; set; }
+        public string CPF { get; set; }
+        public string CNH { get; set; }
+        public DateTime DataNascimento { get; set; }
+        public string Telefone { get; set; }
+        public bool Ativo { get; set; }
 
-        public DateTime CriadoEm { get; private set; }
-        public DateTime AtualizadoEm { get; private set; }
+        public DateTime CriadoEm { get; set; }
+        public DateTime AtualizadoEm { get; set; }
 
         // Navegação (viagens feitas por esse motorista)
         public ICollection<Viagem> Viagens { get; private set; }
         public Usuario Usuario { get; set; }
 
-        protected Motorista() { }
+        public Motorista() { }
 
         public Motorista(Guid usuarioId, string nome, string cpf, string cnh, DateTime dataNascimento, string telefone)
         {

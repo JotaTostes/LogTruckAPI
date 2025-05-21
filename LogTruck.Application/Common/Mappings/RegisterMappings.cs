@@ -8,6 +8,7 @@ namespace LogTruck.Application.Common.Mappers
         {
             config.Scan(typeof(UsuarioMapping).Assembly);
             config.Scan(typeof(MotoristaMapping).Assembly);
+            config.Scan(typeof(CaminhaoMapping).Assembly);
         }
     }
 }

@@ -1,5 +1,6 @@
 using LogTruck.API.Configuration;
 using LogTruck.API.Configurations;
+using LogTruck.API.Middlewares;
 using Mapster;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,6 +22,7 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
 

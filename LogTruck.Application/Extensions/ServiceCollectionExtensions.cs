@@ -9,6 +9,7 @@ using FluentValidation.AspNetCore;
 using LogTruck.Application.Validators.Usuario;
 using LogTruck.Application.Validators.Login;
 using LogTruck.Application.Validators.Motorista;
+using LogTruck.Application.DTOs.Caminhao;
 
 namespace LogTruck.Application.Extensions
 {
@@ -20,6 +21,7 @@ namespace LogTruck.Application.Extensions
             services.AddScoped<IAutenticacaoService, AutenticacaoService>();
             services.AddScoped<IMotoristaService, MotoristaService>();
             services.AddScoped<IUsuarioService, UsuarioService>();
+            services.AddScoped<ICaminhaoService, CaminhaoService>();
 
             services.AddSingleton(TypeAdapterConfig.GlobalSettings);
             services.AddScoped<IMapper, ServiceMapper>();
@@ -28,6 +30,7 @@ namespace LogTruck.Application.Extensions
             services.AddValidatorsFromAssemblyContaining<LoginRequestDtoValidator>();
             services.AddValidatorsFromAssemblyContaining<CreateUsuarioDtoValidator>();
             services.AddValidatorsFromAssemblyContaining<CreateMotoristaDtoValidator>();
+            services.AddValidatorsFromAssemblyContaining<CreateCaminhaoDto>();
 
             // Validação automática
             services.AddFluentValidationAutoValidation();

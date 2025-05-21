@@ -1,11 +1,6 @@
 ﻿using FluentValidation;
 using LogTruck.Application.DTOs.Usuarios;
 using LogTruck.Domain.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LogTruck.Application.Validators.Usuario
 {
@@ -31,6 +26,11 @@ namespace LogTruck.Application.Validators.Usuario
             RuleFor(x => x.Senha)
                 .NotEmpty().WithMessage("A senha é obrigatória.")
                 .MinimumLength(6).WithMessage("A senha deve ter pelo menos 6 caracteres.");
+
+            RuleFor(x => x.Cpf)
+               .NotEmpty().WithMessage("CPF é obrigatório.")
+               .Length(11).WithMessage("CPF deve conter 11 dígitos.")
+               .Matches(@"^\d{11}$").WithMessage("CPF deve conter apenas números.");
         }
 
         private bool BeAValidRole(int role)

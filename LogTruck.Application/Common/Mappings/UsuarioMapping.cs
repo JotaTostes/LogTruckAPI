@@ -1,14 +1,8 @@
 ﻿using LogTruck.Application.DTOs.Usuarios;
 using LogTruck.Domain.Entities;
 using Mapster;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LogTruck.Application.Common.Security;
 using LogTruck.Domain.Enums;
-using LogTruck.Application.DTOs.Login;
 
 namespace LogTruck.Application.Common.Mappers
 {

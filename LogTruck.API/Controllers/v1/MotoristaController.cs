@@ -1,0 +1,58 @@
+﻿using Asp.Versioning;
+using LogTruck.Application.DTOs.Motorista;
+using LogTruck.Application.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace LogTruck.API.Controllers.v1
+{
+    [ApiController]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/motorista")]
+    [Authorize(Roles = "Administrador")]
+    public class MotoristaController : ControllerBase
+    {
+        private readonly IMotoristaService _motoristaService;
+
+        public MotoristaController(IMotoristaService motoristaService)
+        {
+            _motoristaService = motoristaService;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ObterTodos()
+        {
+            var motoristas = await _motoristaService.ObterTodosAsync();
+            return Ok(motoristas);
+        }
+
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> ObterPorId(Guid id)
+        {
+            var motorista = await _motoristaService.GetById(id);
+            return Ok(motorista);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Criar([FromBody] CreateMotoristaDto dto)
+        {
+            var id = await _motoristaService.CreateAsync(dto);
+            return CreatedAtAction(nameof(ObterPorId), new { id, version = "1.0" }, id);
+        }
+
+        [HttpPut()]
+        public async Task<IActionResult> Atualizar([FromBody] AtualizarMotoristaDto dto)
+        {
+            await _motoristaService.UpdateAsync(dto);
+            return NoContent();
+        }
+
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> Deletar(Guid id)
+        {
+            await _motoristaService.DeleteAsync(id);
+            return NoContent();
+        }
+    }
+}
