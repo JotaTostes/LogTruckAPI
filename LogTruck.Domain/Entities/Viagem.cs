@@ -10,16 +10,20 @@ namespace LogTruck.Domain.Entities
     public class Viagem
     {
         public Guid Id { get; private set; }
+
         public Guid MotoristaId { get; private set; }
         public Guid CaminhaoId { get; private set; }
 
         public string Origem { get; private set; }
         public string Destino { get; private set; }
+        public decimal Quilometragem { get; private set; }
+
+
         public DateTime DataSaida { get; private set; }
         public DateTime? DataRetorno { get; private set; }
+
         public StatusViagem Status { get; private set; }
 
-        public decimal Quilometragem { get; private set; }
         public decimal ValorFrete { get; private set; }
 
         // Navegação
@@ -28,7 +32,7 @@ namespace LogTruck.Domain.Entities
         public ICollection<CustoViagem> Custos { get; private set; }
         public Comissao? Comissao { get; private set; }
 
-        protected Viagem() { }
+        public Viagem() { }
 
         public Viagem(Guid motoristaId, Guid caminhaoId, string origem, string destino, DateTime dataSaida, decimal quilometragem, decimal valorFrete)
         {

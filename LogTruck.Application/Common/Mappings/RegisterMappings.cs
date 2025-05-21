@@ -1,4 +1,5 @@
-﻿using Mapster;
+﻿using LogTruck.Application.Common.Mappings;
+using Mapster;
 
 namespace LogTruck.Application.Common.Mappers
 {
@@ -9,6 +10,8 @@ namespace LogTruck.Application.Common.Mappers
             config.Scan(typeof(UsuarioMapping).Assembly);
             config.Scan(typeof(MotoristaMapping).Assembly);
             config.Scan(typeof(CaminhaoMapping).Assembly);
+            config.Scan(typeof(ViagemMapping).Assembly);
+            config.Scan(typeof(CustoViagemMapping).Assembly);
         }
     }
 }

@@ -10,23 +10,16 @@ using System.Threading.Tasks;
 
 namespace LogTruck.Infrastructure.Repositories
 {
-    public class ViagemRepository : IViagemRepository
+    public class ViagemRepository : BaseRepository<Viagem>,IViagemRepository
     {
         private readonly AppDbContext _context;
 
-        public ViagemRepository(AppDbContext context)
+        public ViagemRepository(AppDbContext context) : base(context)
         {
             _context = context;
         }
 
         public async Task<Viagem?> GetByIdAsync(Guid id) => await _context.Viagens.FindAsync(id);
 
-        public async Task<IEnumerable<Viagem>> GetAllAsync() => await _context.Viagens.ToListAsync();
-
-        public async Task AddAsync(Viagem viagem) => await _context.Viagens.AddAsync(viagem);
-
-        public void Update(Viagem viagem) => _context.Viagens.Update(viagem);
-
-        public void Delete(Viagem viagem) => _context.Viagens.Remove(viagem);
     }
 }

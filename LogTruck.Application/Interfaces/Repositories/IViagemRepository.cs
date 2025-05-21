@@ -7,12 +7,8 @@ using System.Threading.Tasks;
 
 namespace LogTruck.Application.Interfaces.Repositories
 {
-    public interface IViagemRepository
+    public interface IViagemRepository : IBaseRepository<Viagem>
     {
         Task<Viagem?> GetByIdAsync(Guid id);
-        Task<IEnumerable<Viagem>> GetAllAsync();
-        Task AddAsync(Viagem viagem);
-        void Update(Viagem viagem);
-        void Delete(Viagem viagem);
     }
 }

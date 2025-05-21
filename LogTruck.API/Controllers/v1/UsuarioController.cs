@@ -7,6 +7,7 @@ using Mapster;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace LogTruck.API.Controllers.v1
 {
@@ -49,11 +50,20 @@ namespace LogTruck.API.Controllers.v1
         [HttpPut("{id:guid}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] UpdateUsuarioDto dto)
         {
-            await _usuarioService.UpdateAsync(id, dto);
-            return NoContent();
+
+            try
+            {
+                await _usuarioService.UpdateAsync(id, dto);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
         [HttpDelete("{id:guid}")]
+        [ProducesResponseType(typeof(HttpStatusCode), StatusCodes.Status200OK)]
         public async Task<IActionResult> Desativar(Guid id)
         {
             var removido = await _usuarioService.Desativar(id);

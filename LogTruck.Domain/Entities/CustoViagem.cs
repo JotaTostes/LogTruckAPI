@@ -9,17 +9,17 @@ namespace LogTruck.Domain.Entities
 {
     public class CustoViagem
     {
-        public Guid Id { get; private set; }
-        public Guid ViagemId { get; private set; }
-        public TipoCusto Tipo { get; private set; }
-        public decimal Valor { get; private set; }
-        public string Descricao { get; private set; }
+        public Guid Id { get; set; }
+        public Guid ViagemId { get; set; }
+        public TipoCusto Tipo { get; set; }
+        public decimal Valor { get; set; }
+        public string Descricao { get; set; }
 
-        public DateTime DataRegistro { get; private set; }
+        public DateTime DataRegistro { get; set; }
 
-        public Viagem Viagem { get; private set; }
+        public Viagem Viagem { get; set; }
 
-        protected CustoViagem() { }
+        public CustoViagem() { }
 
         public CustoViagem(Guid viagemId, TipoCusto tipo, decimal valor, string? observacao = null)
         {
@@ -29,6 +29,13 @@ namespace LogTruck.Domain.Entities
             Valor = valor;
             Descricao = observacao;
             DataRegistro = DateTime.UtcNow;
+        }
+
+        public void Atualizar(TipoCusto tipo, decimal valor, string? observacao = null)
+        {
+            Tipo = tipo;
+            Valor = valor;
+            Descricao = observacao;
         }
     }
 }

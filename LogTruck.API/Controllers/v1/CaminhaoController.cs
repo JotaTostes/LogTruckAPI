@@ -20,6 +20,7 @@ namespace LogTruck.API.Controllers.v1
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<CaminhaoDto>), StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<CaminhaoDto>>> GetAllAsync()
         {
             var caminhoes = await _caminhaoService.ObterTodosAsync();
@@ -27,6 +28,7 @@ namespace LogTruck.API.Controllers.v1
         }
 
         [HttpGet("{id:guid}")]
+        [ProducesResponseType(typeof(CaminhaoDto), StatusCodes.Status200OK)]
         public async Task<ActionResult<CaminhaoDto>> GetByIdAsync(Guid id)
         {
             var caminhao = await _caminhaoService.ObterPorIdAsync(id);
