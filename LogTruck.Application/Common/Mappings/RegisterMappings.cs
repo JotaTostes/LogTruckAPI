@@ -12,6 +12,7 @@ namespace LogTruck.Application.Common.Mappers
             config.Scan(typeof(CaminhaoMapping).Assembly);
             config.Scan(typeof(ViagemMapping).Assembly);
             config.Scan(typeof(CustoViagemMapping).Assembly);
+            config.Scan(typeof(ComissaoMappingConfig).Assembly);
         }
     }
 }

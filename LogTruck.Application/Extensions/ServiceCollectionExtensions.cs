@@ -13,6 +13,7 @@ using LogTruck.Application.DTOs.Caminhao;
 using LogTruck.Application.Validators.Viagem;
 using LogTruck.Application.DTOs.CustoViagem;
 using LogTruck.Application.Validators.CustoViagem;
+using LogTruck.Application.Validators.Comissao;
 
 namespace LogTruck.Application.Extensions
 {
@@ -27,6 +28,7 @@ namespace LogTruck.Application.Extensions
             services.AddScoped<ICaminhaoService, CaminhaoService>();
             services.AddScoped<IViagemService, ViagemService>();
             services.AddScoped<ICustoViagemService, CustoViagemService>();
+            services.AddScoped<IComissaoService, ComissaoService>();
 
             services.AddSingleton(TypeAdapterConfig.GlobalSettings);
             services.AddScoped<IMapper, ServiceMapper>();
@@ -40,6 +42,8 @@ namespace LogTruck.Application.Extensions
             services.AddValidatorsFromAssemblyContaining<UpdateViagemDtoValidator>();
             services.AddValidatorsFromAssemblyContaining<CreateCustoViagemDtoValidator>();
             services.AddValidatorsFromAssemblyContaining<UpdateCustoViagemDtoValidator>();
+            services.AddValidatorsFromAssemblyContaining<CreateComissaoDtoValidator>();
+            services.AddValidatorsFromAssemblyContaining<UpdateComissaoDtoValidator>();
 
             // Validação automática
             services.AddFluentValidationAutoValidation();

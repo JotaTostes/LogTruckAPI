@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace LogTruck.API.Controllers.v1
 {
     [ApiController]
-    [Route("api/v1/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [Authorize(Roles = "Administrador,Operador")]
     public class ViagemController : ControllerBase
     {

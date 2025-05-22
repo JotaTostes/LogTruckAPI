@@ -17,12 +17,26 @@ namespace LogTruck.Domain.Entities
 
         protected Comissao() { }
 
-        public Comissao(Guid viagemId, decimal percentual, decimal valorCalculado)
+        public Comissao(Guid viagemId, decimal percentual, decimal valorFrete)
         {
             Id = Guid.NewGuid();
             ViagemId = viagemId;
             Percentual = percentual;
-            ValorCalculado = valorCalculado;
+            ValorCalculado = CalcularComissao(valorFrete, percentual);
+        }
+        private decimal CalcularComissao(decimal valorFrete, decimal percentual)
+        {
+            return Math.Round(valorFrete * (percentual / 100), 2);
+        }
+
+        public void Atualizar(decimal? percentual, decimal? valorCalculado)
+        {
+            if (percentual.HasValue && percentual.Value > 0)
+                Percentual = percentual.Value;
+
+            if (valorCalculado.HasValue && valorCalculado.Value > 0)
+                ValorCalculado = valorCalculado.Value;
+
         }
     }
 }
