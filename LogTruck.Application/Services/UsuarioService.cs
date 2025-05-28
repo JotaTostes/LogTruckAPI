@@ -4,6 +4,8 @@ using LogTruck.Application.Interfaces.Services;
 using LogTruck.Application.DTOs.Usuarios;
 using Mapster;
 using MapsterMapper;
+using LogTruck.Domain.Enums;
+using System;
 
 namespace LogTruck.Application.Services
 {
@@ -11,7 +13,7 @@ namespace LogTruck.Application.Services
     {
         private readonly IUsuarioRepository _repository;
 
-        public UsuarioService(IUsuarioRepository repository )
+        public UsuarioService(IUsuarioRepository repository)
         {
             _repository = repository;
         }
@@ -69,7 +71,6 @@ namespace LogTruck.Application.Services
         {
             var usuario = await _repository.GetFirstAsync(x => x.Email == email);
             if (usuario is null) return null;
-
             return usuario;
         }
     }

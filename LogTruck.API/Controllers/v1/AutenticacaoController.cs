@@ -39,10 +39,10 @@ namespace LogTruck.API.Controllers.v1
                 token,
                 usuario = new
                 {
-                    usuario.Id,
-                    usuario.Nome,
-                    usuario.Email,
-                    usuario.Role
+                    Id = usuario.Id,
+                    Nome = usuario.Nome,
+                    Email = usuario.Email,
+                    Role = usuario.Role.ToString()
                 }
             });
         }

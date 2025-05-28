@@ -23,6 +23,11 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 app.UseMiddleware<ExceptionMiddleware>();
+app.UseCors(policy =>
+    policy.AllowAnyOrigin()
+          .AllowAnyHeader()
+          .AllowAnyMethod()
+);
 
 app.UseHttpsRedirection();
 
