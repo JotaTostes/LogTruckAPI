@@ -48,6 +48,7 @@ namespace LogTruck.Application.Services
 
             usuario.Desativar();
             _repository.Update(usuario);
+            await _repository.SaveChangesAsync();
 
             return true;
         }
