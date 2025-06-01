@@ -29,6 +29,7 @@ namespace LogTruck.Application.Extensions
             services.AddScoped<IViagemService, ViagemService>();
             services.AddScoped<ICustoViagemService, CustoViagemService>();
             services.AddScoped<IComissaoService, ComissaoService>();
+            services.AddScoped<IDashboardService, DashboardService>();
 
             services.AddSingleton(TypeAdapterConfig.GlobalSettings);
             services.AddScoped<IMapper, ServiceMapper>();

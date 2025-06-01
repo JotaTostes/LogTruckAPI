@@ -1,5 +1,6 @@
 ﻿using Asp.Versioning;
 using LogTruck.Application.DTOs.Motorista;
+using LogTruck.Application.DTOs.Usuarios;
 using LogTruck.Application.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -40,9 +41,8 @@ namespace LogTruck.API.Controllers.v1
             var id = await _motoristaService.CreateAsync(dto);
             return CreatedAtAction(nameof(ObterPorId), new { id, version = "1.0" }, id);
         }
-
-        [HttpPut()]
-        public async Task<IActionResult> Atualizar([FromBody] AtualizarMotoristaDto dto)
+        [HttpPut("{id:guid}")]
+        public async Task<IActionResult> Atualizar(Guid id, [FromBody] AtualizarMotoristaDto dto)
         {
             await _motoristaService.UpdateAsync(dto);
             return NoContent();

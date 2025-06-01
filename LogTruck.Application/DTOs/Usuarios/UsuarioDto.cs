@@ -16,7 +16,7 @@ namespace LogTruck.Application.DTOs.Usuarios
         public bool Ativo { get; set; }
         public DateTime CriadoEm { get; set; }
         public DateTime AtualizadoEm { get; set; }
-
+        public string Cpf { get; set; }
         public MotoristaDto? Motorista { get; set; }
     }
 

@@ -37,6 +37,7 @@ namespace LogTruck.Application.Services
             usuario.Atualizar(dto.Nome, dto.Email, dto.Role);
 
             _repository.Update(usuario);
+            await _repository.SaveChangesAsync();
         }
 
         public async Task<bool> Desativar(Guid id)
@@ -66,6 +67,13 @@ namespace LogTruck.Application.Services
             var usuarios = await _repository.GetAllAsync();
 
             return usuarios.Adapt<IEnumerable<UsuarioDto>>();
+        }
+
+        public async Task<IEnumerable<UsuarioDto>> GetUsuariosMotoristas()
+        {
+            var usuariosMotoristas = await _repository.GetUsuariosMotoristas();
+
+            return usuariosMotoristas.Adapt<IEnumerable<UsuarioDto>>();
         }
 
         public async Task<Usuario?> GetByEmailAsync(string email)

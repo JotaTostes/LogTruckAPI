@@ -10,5 +10,6 @@ namespace LogTruck.Application.Interfaces.Repositories
     public interface IUsuarioRepository : IBaseRepository<Usuario>
     {
         Task<Usuario?> GetByIdAsync(Guid id);
+        Task<List<Usuario>> GetUsuariosMotoristas();
     }
 }

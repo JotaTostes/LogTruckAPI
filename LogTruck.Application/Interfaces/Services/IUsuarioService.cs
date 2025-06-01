@@ -16,5 +16,6 @@ namespace LogTruck.Application.Interfaces.Services
         Task<UsuarioDto?> GetByIdAsync(Guid id);
         Task<IEnumerable<UsuarioDto>> GetAllAsync();
         Task<Usuario?> GetByEmailAsync(string email);
+        Task<IEnumerable<UsuarioDto>> GetUsuariosMotoristas();
     }
 }

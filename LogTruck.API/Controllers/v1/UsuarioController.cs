@@ -31,6 +31,14 @@ namespace LogTruck.API.Controllers.v1
             return Ok(usuarios);
         }
 
+        [HttpGet("usuarios-motoristas")]
+        [ProducesResponseType(typeof(IEnumerable<UsuarioDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetUsuariosMotoristas()
+        {
+            var usuarios = await _usuarioService.GetUsuariosMotoristas();
+            return Ok(usuarios);
+        }
+
         [HttpGet("{id:guid}")]
         [ProducesResponseType(typeof(UsuarioDto), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetById(Guid id)
