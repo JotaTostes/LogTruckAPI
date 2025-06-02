@@ -1,4 +1,5 @@
 ﻿using LogTruck.Application.DTOs.Viagem;
+using LogTruck.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,6 @@ namespace LogTruck.Application.Interfaces.Services
         Task<ViagemDto> ObterPorIdAsync(Guid id);
         Task AtualizarAsync(UpdateViagemDto dto);
         Task CancelarAsync(Guid id);
+        Task<List<Viagem>> ObterViagensCompletas();
     }
 }

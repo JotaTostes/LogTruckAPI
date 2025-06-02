@@ -30,6 +30,12 @@ namespace LogTruck.API.Middlewares
 
         private Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
+
+            if (context.Response.HasStarted)
+            {
+                _logger.LogWarning("A resposta já foi iniciada. Não é possível sobrescrevê-la.");
+                return Task.CompletedTask;
+            }
             var code = HttpStatusCode.InternalServerError;
             var message = "Ocorreu um erro interno no servidor.";
 

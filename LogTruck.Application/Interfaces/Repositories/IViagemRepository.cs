@@ -10,5 +10,6 @@ namespace LogTruck.Application.Interfaces.Repositories
     public interface IViagemRepository : IBaseRepository<Viagem>
     {
         Task<Viagem?> GetByIdAsync(Guid id);
+        Task<List<Viagem>> GetViagensCompletasAsync();
     }
 }

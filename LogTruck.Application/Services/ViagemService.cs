@@ -41,6 +41,11 @@ namespace LogTruck.Application.Services
             return viagens.Adapt<List<ViagemDto>>();
         }
 
+        public async Task<List<Viagem>> ObterViagensCompletas()
+        {
+            return await _viagemRepository.GetViagensCompletasAsync();
+        }
+
         public async Task<ViagemDto> ObterPorIdAsync(Guid id)
         {
             var viagem = await _viagemRepository.GetByIdAsync(id)

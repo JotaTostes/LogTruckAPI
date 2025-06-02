@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
+﻿using LogTruck.Application.Common.Security;
 using LogTruck.Application.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using LogTruck.Application.Common.Security;
+using System.Text.Json;
 
 namespace LogTruck.API.Configurations;
 
@@ -14,7 +15,6 @@ public static class JwtConfigExtensions
         services.Configure<JwtSettings>(jwtSection);
 
         var jwtSettings = jwtSection.Get<JwtSettings>();
-
         var key = Encoding.UTF8.GetBytes(jwtSettings.Secret);
 
         services.AddAuthentication(options =>
@@ -34,6 +34,47 @@ public static class JwtConfigExtensions
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(key)
             };
+
+            options.Events = new JwtBearerEvents
+            {
+                OnAuthenticationFailed = context =>
+                {
+                    if (context.Exception is SecurityTokenExpiredException && !context.Response.HasStarted)
+                    {
+                        context.Response.StatusCode = 401;
+                        context.Response.ContentType = "application/json";
+
+                        var result = JsonSerializer.Serialize(new
+                        {
+                            success = false,
+                            message = "Token expirado. Faça login novamente."
+                        });
+
+                        return context.Response.WriteAsync(result);
+                    }
+
+                    return Task.CompletedTask;
+                },
+                OnChallenge = context =>
+                {
+                    if (!context.Response.HasStarted)
+                    {
+                        context.HandleResponse(); // impede o middleware de continuar com resposta padrão
+                        context.Response.StatusCode = 401;
+                        context.Response.ContentType = "application/json";
+
+                        var result = JsonSerializer.Serialize(new
+                        {
+                            success = false,
+                            message = "Token inválido ou não fornecido."
+                        });
+
+                        return context.Response.WriteAsync(result);
+                    }
+
+                    return Task.CompletedTask;
+                }
+            };
         });
 
         services.AddAuthorization();
@@ -43,3 +84,4 @@ public static class JwtConfigExtensions
         return services;
     }
 }
+
