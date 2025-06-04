@@ -29,7 +29,7 @@ namespace LogTruck.API.Controllers.v1
         }
 
         [HttpGet("completa")]
-        [ProducesResponseType(typeof(IEnumerable<Viagem>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<ViagemCompletaDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetViagensCompletas()
         {
             var viagens = await _viagemService.ObterViagensCompletas();
@@ -51,6 +51,13 @@ namespace LogTruck.API.Controllers.v1
         {
             var id = await _viagemService.CriarAsync(dto);
             return CreatedAtAction(nameof(GetById), new { id }, null);
+        }
+
+        [HttpPut("{id:guid}/status/{statusViagem:int}")]
+        public async Task<IActionResult> Update(Guid id, int statusViagem)
+        {
+            await _viagemService.AtualizarStatusViagem(id, statusViagem);
+            return NoContent();
         }
 
         [HttpPut("{id:guid}")]

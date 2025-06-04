@@ -15,6 +15,7 @@ namespace LogTruck.Application.Interfaces.Services
         Task<ViagemDto> ObterPorIdAsync(Guid id);
         Task AtualizarAsync(UpdateViagemDto dto);
         Task CancelarAsync(Guid id);
-        Task<List<Viagem>> ObterViagensCompletas();
+        Task<List<ViagemCompletaDto>> ObterViagensCompletas();
+        Task AtualizarStatusViagem(Guid idViagem, int statusViagem);
     }
 }

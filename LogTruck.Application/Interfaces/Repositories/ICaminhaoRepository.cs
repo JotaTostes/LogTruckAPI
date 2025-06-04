@@ -10,5 +10,6 @@ namespace LogTruck.Application.Interfaces.Repositories
     public interface ICaminhaoRepository : IBaseRepository<Caminhao>
     {
         Task<Caminhao?> GetByIdAsync(Guid id);
+        Task<List<Caminhao>> GetCaminhoesCompletos();
     }
 }

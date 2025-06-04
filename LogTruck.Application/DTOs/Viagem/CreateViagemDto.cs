@@ -14,6 +14,7 @@ namespace LogTruck.Application.DTOs.Viagem
         public string Destino { get; set; }
         public decimal Quilometragem { get; set; }
         public decimal ValorFrete { get; set; }
+        public int Comissao { get; set; }
         public DateTime DataSaida { get; set; }
     }
 }

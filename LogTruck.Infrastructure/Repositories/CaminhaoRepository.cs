@@ -21,5 +21,13 @@ namespace LogTruck.Infrastructure.Repositories
 
         public async Task<Caminhao?> GetByIdAsync(Guid id)
         => await _context.Caminhoes.FindAsync(id);
+
+        public async Task<List<Caminhao>> GetCaminhoesCompletos()
+        {
+            return await _context.Caminhoes
+                .Include(c => c.Viagens)
+                .AsNoTracking()
+                .ToListAsync();
+        }
     }
 }

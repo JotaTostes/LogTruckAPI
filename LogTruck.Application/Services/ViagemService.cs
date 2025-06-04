@@ -11,14 +11,17 @@ namespace LogTruck.Application.Services
         private readonly IViagemRepository _viagemRepository;
         private readonly IMotoristaRepository _motoristaRepository;
         private readonly ICaminhaoRepository _caminhaoRepository;
+        private readonly IComissaoRepository _comissaoRepository;
 
         public ViagemService(IViagemRepository viagemRepository,
                              IMotoristaRepository motoristaRepository,
-                             ICaminhaoRepository caminhaoRepository)
+                             ICaminhaoRepository caminhaoRepository,
+                             IComissaoRepository comissaoRepository)
         {
             _viagemRepository = viagemRepository;
             _motoristaRepository = motoristaRepository;
             _caminhaoRepository = caminhaoRepository;
+            _comissaoRepository = comissaoRepository;
         }
 
         public async Task<Guid> CriarAsync(CreateViagemDto dto)
@@ -32,6 +35,10 @@ namespace LogTruck.Application.Services
             var viagem = dto.Adapt<Viagem>();
 
             await _viagemRepository.AddAsync(viagem);
+
+            var comissao = new Comissao(viagem.Id, dto.Comissao, dto.ValorFrete);
+            await _comissaoRepository.AddAsync(comissao);
+
             return viagem.Id;
         }
 
@@ -41,7 +48,7 @@ namespace LogTruck.Application.Services
             return viagens.Adapt<List<ViagemDto>>();
         }
 
-        public async Task<List<Viagem>> ObterViagensCompletas()
+        public async Task<List<ViagemCompletaDto>> ObterViagensCompletas()
         {
             return await _viagemRepository.GetViagensCompletasAsync();
         }
@@ -59,6 +66,29 @@ namespace LogTruck.Application.Services
             var viagem = await _viagemRepository.GetByIdAsync(dto.Id)
                           ?? throw new KeyNotFoundException("Viagem não encontrada.");
             dto.Adapt(viagem);
+            _viagemRepository.Update(viagem);
+            await _viagemRepository.SaveChangesAsync();
+        }
+
+        public async Task AtualizarStatusViagem(Guid idViagem, int statusViagem)
+        {
+            var viagem = await _viagemRepository.GetByIdAsync(idViagem)
+                          ?? throw new KeyNotFoundException("Viagem não encontrada.");
+            switch (statusViagem)
+            {
+                case 2:
+                    viagem.MarcarComoEmAndamento();
+                    break;
+
+                case 3:
+                    viagem.MarcarComoConcluida(DateTime.Now);
+                    break;
+
+                case 4:
+                    viagem.Cancelar();
+                    break;
+            }
+
             _viagemRepository.Update(viagem);
             await _viagemRepository.SaveChangesAsync();
         }
