@@ -9,10 +9,11 @@ namespace LogTruck.Domain.Entities
     public class Comissao
     {
         public Guid Id { get; private set; }
-        public Guid ViagemId { get;  set; }
-        public decimal Percentual { get;  set; }
-        public decimal ValorCalculado { get;  set; }
-
+        public Guid ViagemId { get; set; }
+        public decimal Percentual { get; set; }
+        public decimal ValorCalculado { get; set; }
+        public bool Pago { get; set; }
+        public DateTime? DataPagamento { get; set; }
         public Viagem Viagem { get; private set; }
 
         public Comissao() { }
@@ -29,6 +30,12 @@ namespace LogTruck.Domain.Entities
             return Math.Round(valorFrete * (percentual / 100), 2);
         }
 
+        public void SetarComoPago()
+        {
+            Pago = true;
+            DataPagamento = DateTime.UtcNow;
+        }
+
         public void Atualizar(decimal? percentual, decimal? valorCalculado)
         {
             if (percentual.HasValue && percentual.Value > 0)
@@ -36,7 +43,6 @@ namespace LogTruck.Domain.Entities
 
             if (valorCalculado.HasValue && valorCalculado.Value > 0)
                 ValorCalculado = valorCalculado.Value;
-
         }
     }
 }

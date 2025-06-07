@@ -24,6 +24,9 @@ namespace LogTruck.Infrastructure.Repositories
         => await _context.Usuarios.FindAsync(id);
 
         public async Task<List<Usuario>> GetUsuariosMotoristas() =>
-            await _context.Usuarios.Where(x => x.Role == RoleUsuario.Motorista).ToListAsync();
+            await _context.Usuarios
+            .Include(x => x.Motorista)
+            .Where(x => x.Role == RoleUsuario.Motorista)
+            .ToListAsync();
     }
 }

@@ -11,5 +11,6 @@ namespace LogTruck.Application.Interfaces.Repositories
     {
         Task<Comissao?> GetByIdAsync(Guid id);
         Task<bool> ExistePorViagemIdAsync(Guid viagemId);
+        Task<IEnumerable<Comissao>> GetComissaoCompleta();
     }
 }

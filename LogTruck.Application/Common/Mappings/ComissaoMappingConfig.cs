@@ -1,4 +1,5 @@
 ﻿using LogTruck.Application.DTOs.Comissao;
+using LogTruck.Application.DTOs.Viagem;
 using LogTruck.Domain.Entities;
 using Mapster;
 using System;
@@ -26,6 +27,13 @@ namespace LogTruck.Application.Common.Mappings
                   .Ignore(dest => dest.ValorCalculado);
 
             config.NewConfig<Comissao, ComissaoDto>();
+
+            config.NewConfig<Comissao, ComissaoCompletaDto>()
+                    .Map(dest => dest.Viagem, src => src.Viagem);
+
+            config.NewConfig<Viagem, ViagemCompletaDto>()
+                .Ignore(dest => dest.Comissao);
+
         }
     }
 }

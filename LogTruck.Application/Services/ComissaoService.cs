@@ -69,5 +69,22 @@ namespace LogTruck.Application.Services
 
             _comissaoRepository.Delete(comissao);
         }
+
+        public async Task SetarComoPago(Guid id)
+        {
+            var comissao = await _comissaoRepository.GetFirstAsync(x => x.Id == id)
+                             ?? throw new Exception("Comissão não encontrada.");
+
+            comissao.SetarComoPago();
+
+            _comissaoRepository.Update(comissao);
+            await _comissaoRepository.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<ComissaoCompletaDto>> GetComissoesCompletas()
+        {
+            var comissoes = await _comissaoRepository.GetComissaoCompleta();
+            return comissoes.Adapt<IEnumerable<ComissaoCompletaDto>>();
+        }
     }
 }

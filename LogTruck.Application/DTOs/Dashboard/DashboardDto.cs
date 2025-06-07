@@ -21,6 +21,7 @@ namespace LogTruck.Application.DTOs.Dashboard
 
         public decimal CustoTotalViagens { get; set; }
         public decimal TotalComissoesPagas { get; set; }
+        public decimal TotalComissoesPagar { get; set; }
         public decimal PercentualMedioComissao { get; set; }
     }
 

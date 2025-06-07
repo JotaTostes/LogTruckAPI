@@ -17,7 +17,14 @@ namespace LogTruck.Application.Common.Mappers
                 .Ignore(dest => dest.CriadoEm)
                 .Ignore(dest => dest.AtualizadoEm);
 
-                config
+            config
+                .NewConfig<Usuario, UsuarioDto>()
+                .Map(dest => dest.Motorista, src => src.Motorista)
+                .Ignore(dest => dest.Motorista.Usuario)
+                .Ignore(dest => dest.CriadoEm)
+                .Ignore(dest => dest.AtualizadoEm);
+
+            config
                 .NewConfig<CreateUsuarioDto, Usuario>()
                 .Map(dest => dest.Id, _ => Guid.NewGuid())
                 .Map(dest => dest.Nome, src => src.Nome)

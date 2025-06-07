@@ -20,6 +20,7 @@ namespace LogTruck.Persistence.Configurations
             builder.Property(c => c.ValorCalculado)
                    .IsRequired()
                    .HasColumnType("decimal(18,2)");
+            builder.Property(c => c.Pago).HasDefaultValue(false);
         }
     }
 }

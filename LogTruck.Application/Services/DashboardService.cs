@@ -58,7 +58,8 @@ namespace LogTruck.Application.Services
                 TotalCaminhoesAtivos = caminhoes.Count(c => c.Ativo),
                 TotalMotoristasAtivos = motoristas.Count(m => m.Ativo),
                 CustoTotalViagens = custos.Sum(c => c.Valor),
-                TotalComissoesPagas = comissoes.Sum(c => c.ValorCalculado),
+                TotalComissoesPagas = comissoes.Where(x => x.Pago is true).Sum(c => c.ValorCalculado),
+                TotalComissoesPagar = comissoes.Where(x => x.Pago is false).Sum(c => c.ValorCalculado),
                 PercentualMedioComissao = comissoes.Any() ? comissoes.Average(c => c.Percentual) : 0
             };
         }

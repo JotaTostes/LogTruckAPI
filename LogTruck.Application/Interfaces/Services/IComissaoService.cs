@@ -14,5 +14,7 @@ namespace LogTruck.Application.Interfaces.Services
         Task<ComissaoDto> ObterPorIdAsync(Guid id);
         Task<IEnumerable<ComissaoDto>> ObterTodosAsync();
         Task RemoverAsync(Guid id);
+        Task SetarComoPago(Guid id);
+        Task<IEnumerable<ComissaoCompletaDto>> GetComissoesCompletas();
     }
 }

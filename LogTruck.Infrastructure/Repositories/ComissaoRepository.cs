@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace LogTruck.Infrastructure.Repositories
 {
-    public class ComissaoRepository : BaseRepository<Comissao>,IComissaoRepository
+    public class ComissaoRepository : BaseRepository<Comissao>, IComissaoRepository
     {
         private readonly AppDbContext _context;
 
@@ -23,5 +23,13 @@ namespace LogTruck.Infrastructure.Repositories
 
         public async Task<bool> ExistePorViagemIdAsync(Guid viagemId) => await _context.Comissoes.Include(c => c.Viagem)
             .AnyAsync(c => c.ViagemId == viagemId);
+
+        public async Task<IEnumerable<Comissao>> GetComissaoCompleta()
+        {
+            return await _context.Comissoes
+                .Include(c => c.Viagem)
+                    .ThenInclude(x => x.Motorista)
+                .ToListAsync();
+        }
     }
 }
