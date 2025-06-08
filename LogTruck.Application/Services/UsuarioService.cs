@@ -6,6 +6,7 @@ using Mapster;
 using MapsterMapper;
 using LogTruck.Domain.Enums;
 using System;
+using LogTruck.Application.Common.Security;
 
 namespace LogTruck.Application.Services
 {
@@ -34,7 +35,11 @@ namespace LogTruck.Application.Services
             if (usuario == null)
                 throw new KeyNotFoundException("Usuário não encontrado.");
 
-            usuario.Atualizar(dto.Nome, dto.Email, dto.Role);
+            string senhaHash = string.IsNullOrWhiteSpace(dto.Senha)
+                                ? usuario.SenhaHash
+                                : PasswordHashHelper.Hash(dto.Senha);
+
+            usuario.Atualizar(dto.Nome, dto.Email, dto.Role, dto.Cpf, senhaHash);
 
             _repository.Update(usuario);
             await _repository.SaveChangesAsync();

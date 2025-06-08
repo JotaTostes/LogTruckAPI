@@ -29,11 +29,13 @@ namespace LogTruck.Domain.Entities
             AtualizadoEm = DateTime.UtcNow;
         }
 
-        public void Atualizar(string nome, string email, RoleUsuario role)
+        public void Atualizar(string nome, string email, RoleUsuario role, string CPF, string Senha)
         {
             Nome = nome;
             Email = email;
             Role = role;
+            Cpf = CPF;
+            SenhaHash = Senha;
             AtualizadoEm = DateTime.UtcNow;
         }
 
