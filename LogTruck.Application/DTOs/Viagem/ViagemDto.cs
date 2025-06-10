@@ -1,4 +1,6 @@
 ﻿
+using LogTruck.Application.DTOs.Comissao;
+
 namespace LogTruck.Application.DTOs.Viagem
 {
     public class ViagemDto
@@ -13,5 +15,6 @@ namespace LogTruck.Application.DTOs.Viagem
         public DateTime DataSaida { get; set; }
         public DateTime? DataRetorno { get; set; }
         public string Status { get; set; }
+        public ComissaoDto Comissao { get; set; }
     }
 }

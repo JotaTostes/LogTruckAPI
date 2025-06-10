@@ -5,6 +5,7 @@ using LogTruck.Application.DTOs.Motorista;
 using LogTruck.Application.DTOs.Viagem;
 using LogTruck.Application.Interfaces.Repositories;
 using LogTruck.Domain.Entities;
+using LogTruck.Domain.Enums;
 using LogTruck.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -26,16 +27,16 @@ namespace LogTruck.Infrastructure.Repositories
 
         public async Task<Viagem?> GetByIdAsync(Guid id) => await _context.Viagens.FindAsync(id);
 
-        public async Task<List<ViagemCompletaDto>> GetViagensCompletasAsync()
+        public async Task<List<ViagemCompletaDto>> GetViagensCompletasAsync(CancellationToken cancellationToken = default)
         {
             var viagens = await _context.Viagens
-                .Include(v => v.Motorista)
-                .Include(v => v.Caminhao)
-                .Include(v => v.Custos)
-                .Include(v => v.Comissao)
-                .ToListAsync();
-
-            var lista = viagens.Select(v => new ViagemCompletaDto
+            .AsNoTracking()
+            .Include(v => v.Motorista)
+            .Include(v => v.Caminhao)
+            .Include(v => v.Custos)
+            .Include(v => v.Comissao)
+            .Where(v => v.Status != StatusViagem.Cancelada)
+            .Select(v => new ViagemCompletaDto
             {
                 Id = v.Id,
                 Motorista = v.Motorista == null ? null : new MotoristaDto
@@ -76,9 +77,10 @@ namespace LogTruck.Infrastructure.Repositories
                     Percentual = v.Comissao.Percentual,
                     ValorCalculado = v.Comissao.ValorCalculado
                 }
-            }).ToList();
+            })
+            .ToListAsync(cancellationToken);
 
-            return lista;
+            return viagens;
         }
     }
 }

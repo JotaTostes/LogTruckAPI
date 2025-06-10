@@ -29,6 +29,7 @@ namespace LogTruck.API.Controllers.v1
         }
 
         [HttpGet("{id:guid}")]
+        [ProducesResponseType(typeof(MotoristaDto), StatusCodes.Status200OK)]
         public async Task<IActionResult> ObterPorId(Guid id)
         {
             var motorista = await _motoristaService.GetById(id);
@@ -53,6 +54,14 @@ namespace LogTruck.API.Controllers.v1
         {
             await _motoristaService.DeleteAsync(id);
             return NoContent();
+        }
+
+        [HttpGet("motoristas-completos")]
+        [ProducesResponseType(typeof(List<MotoristaCompletoDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> ObterMotoristasCompletos()
+        {
+            var motoristasCompletos = await _motoristaService.ObterTodosMotoristasCompletos();
+            return Ok(motoristasCompletos);
         }
     }
 }

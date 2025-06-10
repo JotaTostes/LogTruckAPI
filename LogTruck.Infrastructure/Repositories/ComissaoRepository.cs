@@ -1,5 +1,6 @@
 ﻿using LogTruck.Application.Interfaces.Repositories;
 using LogTruck.Domain.Entities;
+using LogTruck.Domain.Enums;
 using LogTruck.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -29,6 +30,7 @@ namespace LogTruck.Infrastructure.Repositories
             return await _context.Comissoes
                 .Include(c => c.Viagem)
                     .ThenInclude(x => x.Motorista)
+                .Where(c => c.Viagem.Status != StatusViagem.Planejada && c.Viagem.Status != StatusViagem.Cancelada)
                 .ToListAsync();
         }
     }

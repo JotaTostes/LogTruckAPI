@@ -25,6 +25,11 @@ namespace LogTruck.Application.Common.Mappers
                 .Ignore(dest => dest.Id)
                 .Ignore(dest => dest.Viagens)
                 .Ignore(dest => dest.Usuario);
+
+            config.NewConfig<Motorista, MotoristaCompletoDto>()
+                .Map(dest => dest.Usuario, src => src.Usuario)
+                .Map(dest => dest.Viagens, src => src.Viagens);
+
         }
     }
 }

@@ -9,5 +9,6 @@ namespace LogTruck.Application.Interfaces.Services
         Task<Guid> CreateAsync(CreateMotoristaDto dto);
         Task UpdateAsync(AtualizarMotoristaDto dto);
         Task DeleteAsync(Guid id);
+        Task<List<MotoristaCompletoDto>> ObterTodosMotoristasCompletos();
     }
 }

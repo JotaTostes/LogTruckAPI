@@ -20,10 +20,10 @@ namespace LogTruck.Application.Services
         public async Task<Guid> CreateAsync(CreateComissaoDto dto)
         {
             var viagem = await _viagemRepository.GetByIdAsync(dto.ViagemId)
-                          ?? throw new Exception("Viagem não encontrada.");
+                          ?? throw new KeyNotFoundException("Viagem não encontrada.");
 
             if (await _comissaoRepository.ExistePorViagemIdAsync(dto.ViagemId))
-                throw new Exception("Já existe uma comissão registrada para esta viagem.");
+                throw new InvalidOperationException("Já existe uma comissão registrada para esta viagem.");
 
             var valorCalculado = viagem.ValorFrete * (dto.Percentual / 100);
 
@@ -36,10 +36,10 @@ namespace LogTruck.Application.Services
         public async Task AtualizarAsync(UpdateComissaoDto dto)
         {
             var comissao = await _comissaoRepository.GetByIdAsync(dto.Id)
-                             ?? throw new Exception("Comissão não encontrada.");
+                             ?? throw new KeyNotFoundException("Comissão não encontrada.");
 
             var viagem = await _viagemRepository.GetByIdAsync(comissao.ViagemId)
-                          ?? throw new Exception("Viagem associada não encontrada.");
+                          ?? throw new KeyNotFoundException("Viagem associada não encontrada.");
 
             var valorCalculado = viagem.ValorFrete * (dto.Percentual / 100);
             comissao.Atualizar(dto.Percentual, valorCalculado);
@@ -51,7 +51,7 @@ namespace LogTruck.Application.Services
         public async Task<ComissaoDto> ObterPorIdAsync(Guid id)
         {
             var comissao = await _comissaoRepository.GetByIdAsync(id)
-                             ?? throw new Exception("Comissão não encontrada.");
+                             ?? throw new KeyNotFoundException("Comissão não encontrada.");
 
             return comissao.Adapt<ComissaoDto>();
         }
@@ -65,7 +65,7 @@ namespace LogTruck.Application.Services
         public async Task RemoverAsync(Guid id)
         {
             var comissao = await _comissaoRepository.GetByIdAsync(id)
-                             ?? throw new Exception("Comissão não encontrada.");
+                             ?? throw new KeyNotFoundException("Comissão não encontrada.");
 
             _comissaoRepository.Delete(comissao);
         }
@@ -73,12 +73,21 @@ namespace LogTruck.Application.Services
         public async Task SetarComoPago(Guid id)
         {
             var comissao = await _comissaoRepository.GetFirstAsync(x => x.Id == id)
-                             ?? throw new Exception("Comissão não encontrada.");
+                             ?? throw new KeyNotFoundException("Comissão não encontrada.");
 
             comissao.SetarComoPago();
 
+             var viagem = await _viagemRepository.GetFirstAsync(x => x.Id == comissao.ViagemId);
+
+            if (viagem == null)
+                throw new KeyNotFoundException("Viagem associada não encontrada.");
+
+            viagem.MarcarComoConcluida(DateTime.Now);
+
             _comissaoRepository.Update(comissao);
+            _viagemRepository.Update(viagem);
             await _comissaoRepository.SaveChangesAsync();
+            await _viagemRepository.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<ComissaoCompletaDto>> GetComissoesCompletas()
