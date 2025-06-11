@@ -1,7 +1,10 @@
-﻿using LogTruck.Application.DTOs.CustoViagem;
+﻿using LogTruck.Application.Common.Notifications;
+using LogTruck.Application.DTOs.CustoViagem;
 using LogTruck.Application.Interfaces.Repositories;
 using LogTruck.Application.Interfaces.Services;
 using LogTruck.Domain.Entities;
+using LogTruck.Domain.Enums;
+using LogTruck.Domain.Exceptions;
 using Mapster;
 using System;
 using System.Collections.Generic;
@@ -15,11 +18,13 @@ namespace LogTruck.Application.Services
     {
         private readonly ICustoViagemRepository _custoViagemRepository;
         private readonly IViagemRepository _viagemRepository;
+        private readonly INotifier _notifier;
 
-        public CustoViagemService(ICustoViagemRepository custoViagemRepository, IViagemRepository viagemRepository)
+        public CustoViagemService(INotifier notifier, ICustoViagemRepository custoViagemRepository, IViagemRepository viagemRepository)
         {
             _custoViagemRepository = custoViagemRepository;
             _viagemRepository = viagemRepository;
+            _notifier = notifier;
         }
 
         public async Task<IEnumerable<CustoViagemDto>> ObterPorViagemAsync(Guid viagemId)
@@ -34,15 +39,23 @@ namespace LogTruck.Application.Services
             return custo?.Adapt<CustoViagemDto>();
         }
 
-        public async Task<Guid> AdicionarAsync(CreateCustoViagemDto dto)
+        public async Task AdicionarAsync(CreateCustoViagemDto dto)
         {
-            var viagem = await _viagemRepository.GetByIdAsync(dto.ViagemId)
-                ?? throw new KeyNotFoundException("Viagem não encontrada.");
+            var viagem = await _viagemRepository.GetByIdAsync(dto.ViagemId);
+            if (viagem is null)
+            {
+                _notifier.Handle(new Notification("Erro", "Viagem não encontrada."));
+                return;
+            }
+
+            if (viagem.Status == StatusViagem.Concluida)
+            {
+                _notifier.Handle(new Notification("Erro", "Não é possível lançar custos em viagens concluídas."));
+                return;
+            }
 
             var custo = dto.Adapt<CustoViagem>();
             await _custoViagemRepository.AddAsync(custo);
-
-            return custo.Id;
         }
 
         public async Task AtualizarAsync(UpdateCustoViagemDto dto)

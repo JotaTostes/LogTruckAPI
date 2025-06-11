@@ -1,4 +1,5 @@
 ﻿using Asp.Versioning;
+using LogTruck.Application.Common.Notifications;
 using LogTruck.Application.DTOs.Comissao;
 using LogTruck.Application.DTOs.Usuarios;
 using LogTruck.Application.Interfaces.Services;
@@ -11,11 +12,11 @@ namespace LogTruck.API.Controllers.v1
     [ApiVersion("1.0")]
     [Authorize(Roles = "Administrador,Operador")]
     [Route("api/v{version:apiVersion}/[controller]")]
-    public class ComissaoController : ControllerBase
+    public class ComissaoController : ApiControllerBase
     {
         private readonly IComissaoService _comissaoService;
 
-        public ComissaoController(IComissaoService comissaoService)
+        public ComissaoController(INotifier notifier, IComissaoService comissaoService) : base(notifier)
         {
             _comissaoService = comissaoService;
         }

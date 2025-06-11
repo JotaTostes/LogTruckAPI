@@ -1,4 +1,5 @@
 ﻿using Asp.Versioning;
+using LogTruck.Application.Common.Notifications;
 using LogTruck.Application.Common.Security;
 using LogTruck.Application.DTOs.Login;
 using LogTruck.Application.Interfaces.Services;
@@ -12,12 +13,12 @@ namespace LogTruck.API.Controllers.v1
     [ApiController]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/auth")]
-    public class AutenticacaoController : ControllerBase
+    public class AutenticacaoController : ApiControllerBase
     {
         private readonly IUsuarioService _usuarioService;
         private readonly TokenService _tokenService;
 
-        public AutenticacaoController(IUsuarioService usuarioService, TokenService tokenService)
+        public AutenticacaoController(INotifier notifier, IUsuarioService usuarioService, TokenService tokenService) : base(notifier)
         {
             _usuarioService = usuarioService;
             _tokenService = tokenService;

@@ -1,8 +1,10 @@
-﻿using LogTruck.Application.DTOs.Usuarios;
+﻿using LogTruck.Application.Common.Notifications;
+using LogTruck.Application.DTOs.Usuarios;
 using LogTruck.Application.DTOs.Viagem;
 using LogTruck.Application.Interfaces.Services;
 using LogTruck.Application.Services;
 using LogTruck.Domain.Entities;
+using LogTruck.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,11 +14,11 @@ namespace LogTruck.API.Controllers.v1
     [ApiController]
     [Route("api/v{version:apiVersion}/[controller]")]
     [Authorize(Roles = "Administrador,Operador")]
-    public class ViagemController : ControllerBase
+    public class ViagemController : ApiControllerBase
     {
         private readonly IViagemService _viagemService;
 
-        public ViagemController(IViagemService viagemService)
+        public ViagemController(INotifier notifier, IViagemService viagemService) : base(notifier)
         {
             _viagemService = viagemService;
         }
@@ -74,6 +76,12 @@ namespace LogTruck.API.Controllers.v1
         public async Task<IActionResult> Cancelar(Guid id)
         {
             await _viagemService.CancelarAsync(id);
+            return NoContent();
+        }
+        [HttpPut("{id:guid}/aprovar")]
+        public async Task<IActionResult> Aprovar(Guid id)
+        {
+            await _viagemService.AtualizarStatusViagem(id, (int)StatusViagem.EmAndamento);
             return NoContent();
         }
     }

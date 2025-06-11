@@ -1,11 +1,8 @@
 ﻿using Asp.Versioning;
+using LogTruck.Application.Common.Notifications;
 using LogTruck.Application.DTOs.Usuarios;
 using LogTruck.Application.Interfaces.Services;
-using LogTruck.Application.Services;
-using LogTruck.Domain.Entities;
-using Mapster;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -14,11 +11,11 @@ namespace LogTruck.API.Controllers.v1
     [ApiController]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
-    public class UsuarioController : ControllerBase
+    public class UsuarioController : ApiControllerBase
     {
         private readonly IUsuarioService _usuarioService;
 
-        public UsuarioController(IUsuarioService usuarioService)
+        public UsuarioController(INotifier notifier, IUsuarioService usuarioService) : base(notifier)
         {
             _usuarioService = usuarioService;
         }

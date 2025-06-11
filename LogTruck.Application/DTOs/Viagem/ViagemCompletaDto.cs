@@ -15,6 +15,8 @@ namespace LogTruck.Application.DTOs.Viagem
         public Guid Id { get; set; }
         public MotoristaDto Motorista { get; set; }
         public CaminhaoDto Caminhao { get; set; }
+        public string MotoristaNome { get; set; }
+        public string CaminhaoPlaca { get; set; }
         public string Origem { get; set; }
         public string Destino { get; set; }
         public decimal Quilometragem { get; set; }
@@ -22,6 +24,7 @@ namespace LogTruck.Application.DTOs.Viagem
         public string DataSaida { get; set; }
         public string? DataRetorno { get; set; }
         public int Status { get; set; }
+        public string StatusNome { get; set; }
 
         public List<CustoViagemDto> Custos { get; set; }
         public ComissaoDto? Comissao { get; set; }

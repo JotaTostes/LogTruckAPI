@@ -1,4 +1,5 @@
 ﻿using Asp.Versioning;
+using LogTruck.Application.Common.Notifications;
 using LogTruck.Application.DTOs.CustoViagem;
 using LogTruck.Application.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -7,15 +8,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LogTruck.API.Controllers.v1
 {
-    [ApiController]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [Authorize]
-    public class CustoViagemController : ControllerBase
+    public class CustoViagemController : ApiControllerBase
     {
         private readonly ICustoViagemService _custoViagemService;
 
-        public CustoViagemController(ICustoViagemService custoViagemService)
+        public CustoViagemController(INotifier notifier, ICustoViagemService custoViagemService) :base(notifier)
         {
             _custoViagemService = custoViagemService;
         }
@@ -38,8 +38,9 @@ namespace LogTruck.API.Controllers.v1
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateCustoViagemDto dto)
         {
-            var id = await _custoViagemService.AdicionarAsync(dto);
-            return CreatedAtAction(nameof(GetById), new { id }, dto);
+            await _custoViagemService.AdicionarAsync(dto);
+
+            return CustomResponse();
         }
 
         [HttpPut("{id:guid}")]

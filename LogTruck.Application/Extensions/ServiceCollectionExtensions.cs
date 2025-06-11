@@ -14,6 +14,7 @@ using LogTruck.Application.Validators.Viagem;
 using LogTruck.Application.DTOs.CustoViagem;
 using LogTruck.Application.Validators.CustoViagem;
 using LogTruck.Application.Validators.Comissao;
+using LogTruck.Application.Common.Notifications;
 
 namespace LogTruck.Application.Extensions
 {
@@ -21,6 +22,9 @@ namespace LogTruck.Application.Extensions
     {
         public static IServiceCollection AddApplication(this IServiceCollection services, IConfiguration configuration)
         {
+            //Notification
+            services.AddScoped<INotifier, Notifier>();
+
             // Services
             services.AddScoped<IAutenticacaoService, AutenticacaoService>();
             services.AddScoped<IMotoristaService, MotoristaService>();

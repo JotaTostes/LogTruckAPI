@@ -39,6 +39,9 @@ namespace LogTruck.Infrastructure.Repositories
             .Select(v => new ViagemCompletaDto
             {
                 Id = v.Id,
+                MotoristaNome = v.Motorista.Nome,
+                CaminhaoPlaca = v.Caminhao.Placa,
+                StatusNome = v.Status.ToString(),
                 Motorista = v.Motorista == null ? null : new MotoristaDto
                 {
                     Id = v.Motorista.Id,

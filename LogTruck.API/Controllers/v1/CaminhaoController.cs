@@ -1,4 +1,5 @@
 ﻿using Asp.Versioning;
+using LogTruck.Application.Common.Notifications;
 using LogTruck.Application.DTOs.Caminhao;
 using LogTruck.Application.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -10,11 +11,11 @@ namespace LogTruck.API.Controllers.v1
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [Authorize(Roles = "Administrador")]
-    public class CaminhaoController : ControllerBase
+    public class CaminhaoController : ApiControllerBase
     {
         private readonly ICaminhaoService _caminhaoService;
 
-        public CaminhaoController(ICaminhaoService caminhaoService)
+        public CaminhaoController(INotifier notifier, ICaminhaoService caminhaoService) : base(notifier)
         {
             _caminhaoService = caminhaoService;
         }

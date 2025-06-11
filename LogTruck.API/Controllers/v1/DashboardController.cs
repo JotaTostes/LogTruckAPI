@@ -1,8 +1,7 @@
 ﻿using Asp.Versioning;
+using LogTruck.Application.Common.Notifications;
 using LogTruck.Application.Interfaces.Services;
-using LogTruck.Application.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LogTruck.API.Controllers.v1
@@ -11,11 +10,11 @@ namespace LogTruck.API.Controllers.v1
     [Route("api/v{version:apiVersion}/dashboard")]
     [ApiVersion("1.0")]
     [Authorize(Roles = "Administrador,Operador")]
-    public class DashboardController : ControllerBase
+    public class DashboardController : ApiControllerBase
     {
         private readonly IDashboardService _dashboardService;
 
-        public DashboardController(IDashboardService dashboardService)
+        public DashboardController(INotifier notifier, IDashboardService dashboardService) : base(notifier)
         {
             _dashboardService = dashboardService;
         }

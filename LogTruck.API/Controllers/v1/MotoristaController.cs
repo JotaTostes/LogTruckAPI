@@ -1,4 +1,5 @@
 ﻿using Asp.Versioning;
+using LogTruck.Application.Common.Notifications;
 using LogTruck.Application.DTOs.Motorista;
 using LogTruck.Application.DTOs.Usuarios;
 using LogTruck.Application.Interfaces.Services;
@@ -12,11 +13,11 @@ namespace LogTruck.API.Controllers.v1
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [Authorize(Roles = "Administrador")]
-    public class MotoristaController : ControllerBase
+    public class MotoristaController : ApiControllerBase
     {
         private readonly IMotoristaService _motoristaService;
 
-        public MotoristaController(IMotoristaService motoristaService)
+        public MotoristaController(INotifier notifier,IMotoristaService motoristaService) :base(notifier)
         {
             _motoristaService = motoristaService;
         }
