@@ -46,12 +46,12 @@ namespace LogTruck.API.Controllers.v1
             return CreatedAtAction(nameof(GetByIdAsync), new { id, version = "1.0" }, null);
         }
 
-        [HttpPut()]
-        public async Task<ActionResult> UpdateAsync([FromBody] UpdateCaminhaoDto dto)
+        [HttpPut("{id:guid}")]
+        public async Task<ActionResult> UpdateAsync(Guid id, [FromBody] UpdateCaminhaoDto dto)
         {
             try
             {
-                await _caminhaoService.AtualizarAsync(dto);
+                await _caminhaoService.AtualizarAsync(id, dto);
                 return NoContent();
             }
             catch (Exception ex)

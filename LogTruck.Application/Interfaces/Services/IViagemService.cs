@@ -10,7 +10,7 @@ namespace LogTruck.Application.Interfaces.Services
 {
     public interface IViagemService
     {
-        Task<Guid> CriarAsync(CreateViagemDto dto);
+        Task CriarAsync(CreateViagemDto dto);
         Task<List<ViagemDto>> ObterTodasAsync();
         Task<ViagemDto> ObterPorIdAsync(Guid id);
         Task AtualizarAsync(UpdateViagemDto dto);

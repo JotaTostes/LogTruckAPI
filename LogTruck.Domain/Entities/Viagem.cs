@@ -49,6 +49,8 @@ namespace LogTruck.Domain.Entities
         }
 
         public void MarcarComoEmAndamento() => Status = StatusViagem.EmAndamento;
+
+        public void MarcarComoPlanejada() => Status = StatusViagem.Planejada;
         public void MarcarComoConcluida(DateTime dataRetorno)
         {
             DataRetorno = dataRetorno;

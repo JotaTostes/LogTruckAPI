@@ -12,7 +12,7 @@ namespace LogTruck.Application.Interfaces.Services
         Task<IEnumerable<CaminhaoDto>> ObterTodosAsync();
         Task<CaminhaoDto> ObterPorIdAsync(Guid id);
         Task<Guid> CriarAsync(CreateCaminhaoDto dto);
-        Task AtualizarAsync(UpdateCaminhaoDto dto);
+        Task AtualizarAsync(Guid id, UpdateCaminhaoDto dto);
         Task DeletarAsync(Guid id);
     }
 }

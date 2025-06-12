@@ -27,7 +27,7 @@ namespace LogTruck.API.Controllers.v1
         public async Task<IActionResult> GetAll()
         {
             var viagens = await _viagemService.ObterTodasAsync();
-            return Ok(viagens);
+            return CustomResponse(viagens);
         }
 
         [HttpGet("completa")]
@@ -35,7 +35,7 @@ namespace LogTruck.API.Controllers.v1
         public async Task<IActionResult> GetViagensCompletas()
         {
             var viagens = await _viagemService.ObterViagensCompletas();
-            return Ok(viagens);
+            return CustomResponse(viagens);
         }
 
         [HttpGet("{id:guid}")]
@@ -45,21 +45,21 @@ namespace LogTruck.API.Controllers.v1
             if (viagem is null)
                 return NotFound();
 
-            return Ok(viagem);
+            return CustomResponse(viagem);
         }
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateViagemDto dto)
         {
-            var id = await _viagemService.CriarAsync(dto);
-            return CreatedAtAction(nameof(GetById), new { id }, null);
+            await _viagemService.CriarAsync(dto);
+            return CustomResponse();
         }
 
         [HttpPut("{id:guid}/status/{statusViagem:int}")]
         public async Task<IActionResult> Update(Guid id, int statusViagem)
         {
             await _viagemService.AtualizarStatusViagem(id, statusViagem);
-            return NoContent();
+            return CustomResponse();
         }
 
         [HttpPut("{id:guid}")]
@@ -69,20 +69,20 @@ namespace LogTruck.API.Controllers.v1
                 return BadRequest("Id do caminho não confere com o corpo da requisição.");
 
             await _viagemService.AtualizarAsync(dto);
-            return NoContent();
+            return CustomResponse();
         }
 
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Cancelar(Guid id)
         {
             await _viagemService.CancelarAsync(id);
-            return NoContent();
+            return CustomResponse();
         }
         [HttpPut("{id:guid}/aprovar")]
         public async Task<IActionResult> Aprovar(Guid id)
         {
             await _viagemService.AtualizarStatusViagem(id, (int)StatusViagem.EmAndamento);
-            return NoContent();
+            return CustomResponse();
         }
     }
 }

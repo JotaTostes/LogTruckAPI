@@ -36,9 +36,9 @@ namespace LogTruck.Application.Services
             return caminhao.Id;
         }
 
-        public async Task AtualizarAsync(UpdateCaminhaoDto dto)
+        public async Task AtualizarAsync(Guid id, UpdateCaminhaoDto dto)
         {
-            var caminhao = await _caminhaoRepository.GetByIdAsync(dto.Id)
+            var caminhao = await _caminhaoRepository.GetByIdAsync(id)
                             ?? throw new KeyNotFoundException("Caminhao não encontrado");
 
             caminhao.Atualizar(dto.Marca, dto.Modelo, dto.Placa, dto.Ano, dto.CapacidadeToneladas);

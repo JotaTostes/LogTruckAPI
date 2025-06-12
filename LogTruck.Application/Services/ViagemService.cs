@@ -1,7 +1,9 @@
-﻿using LogTruck.Application.DTOs.Viagem;
+﻿using LogTruck.Application.Common.Notifications;
+using LogTruck.Application.DTOs.Viagem;
 using LogTruck.Application.Interfaces.Repositories;
 using LogTruck.Application.Interfaces.Services;
 using LogTruck.Domain.Entities;
+using LogTruck.Domain.Enums;
 using Mapster;
 
 namespace LogTruck.Application.Services
@@ -12,8 +14,10 @@ namespace LogTruck.Application.Services
         private readonly IMotoristaRepository _motoristaRepository;
         private readonly ICaminhaoRepository _caminhaoRepository;
         private readonly IComissaoRepository _comissaoRepository;
+        private readonly INotifier _notifier;
 
-        public ViagemService(IViagemRepository viagemRepository,
+        public ViagemService(INotifier notifier,
+                            IViagemRepository viagemRepository,
                              IMotoristaRepository motoristaRepository,
                              ICaminhaoRepository caminhaoRepository,
                              IComissaoRepository comissaoRepository)
@@ -22,15 +26,18 @@ namespace LogTruck.Application.Services
             _motoristaRepository = motoristaRepository;
             _caminhaoRepository = caminhaoRepository;
             _comissaoRepository = comissaoRepository;
+            _notifier = notifier;
         }
 
-        public async Task<Guid> CriarAsync(CreateViagemDto dto)
+        public async Task CriarAsync(CreateViagemDto dto)
         {
             var motorista = await _motoristaRepository.GetByIdAsync(dto.MotoristaId)
                              ?? throw new KeyNotFoundException("Motorista não encontrado.");
 
             var caminhao = await _caminhaoRepository.GetByIdAsync(dto.CaminhaoId)
                             ?? throw new KeyNotFoundException("Caminhão não encontrado.");
+            if (!await ValidaCaminhaoEViagem(dto.MotoristaId, dto.CaminhaoId))
+                return;
 
             var viagem = dto.Adapt<Viagem>();
 
@@ -38,8 +45,34 @@ namespace LogTruck.Application.Services
 
             var comissao = new Comissao(viagem.Id, dto.Comissao, dto.ValorFrete);
             await _comissaoRepository.AddAsync(comissao);
+        }
 
-            return viagem.Id;
+
+        private async Task<bool> ValidaCaminhaoEViagem(Guid motoristaId, Guid caminhaoId)
+        {
+            // Verifica se já existe uma viagem em andamento para o motorista
+            var viagemMotoristaEmAndamento = await _viagemRepository.GetFirstAsync(
+                x => x.MotoristaId == motoristaId && x.Status == StatusViagem.EmAndamento
+            );
+
+            if (viagemMotoristaEmAndamento != null)
+            {
+                _notifier.Handle(new Notification("Erro", "O motorista já possui uma viagem em andamento."));
+                return false;
+            }
+
+            // Verifica se o caminhão já está em uma viagem em andamento
+            var viagemCaminhaoEmAndamento = await _viagemRepository.GetFirstAsync(
+                x => x.CaminhaoId == caminhaoId && x.Status == StatusViagem.EmAndamento
+            );
+
+            if (viagemCaminhaoEmAndamento != null)
+            {
+                _notifier.Handle(new Notification("Erro", "O caminhão já está em uma viagem em andamento."));
+                return false;
+            }
+
+            return true;
         }
 
         public async Task<List<ViagemDto>> ObterTodasAsync()
@@ -76,6 +109,10 @@ namespace LogTruck.Application.Services
                           ?? throw new KeyNotFoundException("Viagem não encontrada.");
             switch (statusViagem)
             {
+                case 1:
+                    viagem.MarcarComoPlanejada();
+                    break;
+
                 case 2:
                     viagem.MarcarComoEmAndamento();
                     break;
