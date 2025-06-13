@@ -16,12 +16,19 @@ namespace LogTruck.Infrastructure.Repositories
 
         public async Task<Motorista?> GetByIdAsync(Guid id) => await _context.Motoristas.FindAsync(id);
 
-        public async Task<List<Motorista>> GetAllMotoristasCompletos()
+        public async Task<List<Motorista>> GetAllMotoristasCompletos(Guid? motoristaId = null)
         {
-            return await _context.Motoristas
+            var query = _context.Motoristas
                 .Include(m => m.Viagens)
                     .ThenInclude(v => v.Comissao)
-                .ToListAsync();
+                .AsQueryable();
+
+            if (motoristaId.HasValue)
+            {
+                query = query.Where(m => m.Id == motoristaId.Value);
+            }
+
+            return await query.ToListAsync();
         }
     }
 }

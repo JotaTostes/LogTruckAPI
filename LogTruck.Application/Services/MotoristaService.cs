@@ -1,4 +1,5 @@
-﻿using LogTruck.Application.DTOs.Comissao;
+﻿using LogTruck.Application.Common.Notifications;
+using LogTruck.Application.DTOs.Comissao;
 using LogTruck.Application.DTOs.Motorista;
 using LogTruck.Application.Interfaces.Repositories;
 using LogTruck.Application.Interfaces.Services;
@@ -12,11 +13,17 @@ namespace LogTruck.Application.Services
     {
         private readonly IMotoristaRepository _motoristaRepository;
         private readonly IUsuarioRepository _usuarioRepository;
+        private readonly IViagemRepository _viagemRepository;
+        private readonly INotifier _notifier;
 
-        public MotoristaService(IMotoristaRepository motoristaRepository, IUsuarioRepository usuarioRepository)
+        public MotoristaService(INotifier notifier,IMotoristaRepository motoristaRepository,
+            IUsuarioRepository usuarioRepository,
+            IViagemRepository viagemRepository)
         {
+            _notifier = notifier;
             _motoristaRepository = motoristaRepository;
             _usuarioRepository = usuarioRepository;
+            _viagemRepository = viagemRepository;
         }
 
         public async Task<IEnumerable<MotoristaDto>> ObterTodosAsync()
@@ -64,14 +71,29 @@ namespace LogTruck.Application.Services
 
         public async Task DeleteAsync(Guid id)
         {
-            var motorista = await _motoristaRepository.GetByIdAsync(id)
+            var motorista = await _motoristaRepository.GetAllMotoristasCompletos(id)
                             ?? throw new KeyNotFoundException("Motorista não encontrado.");
 
-            motorista.Desativar();
-            _motoristaRepository.Update(motorista);
+            var motoristaParaDeletar = motorista.First();
+
+            if (await MotoristaTemViagemEmAndamento(motoristaParaDeletar))
+            {
+               _notifier.Handle(new Notification("Erro","Não é possível deletar o motorista, pois ele possui viagens em andamento."));
+                return;
+            }
+
+            _motoristaRepository.Delete(motoristaParaDeletar);
             await _motoristaRepository.SaveChangesAsync();
         }
 
+        public async Task<bool> MotoristaTemViagemEmAndamento(Motorista motorista)
+        {
+            var viagens = motorista.Viagens;
+            if (viagens == null || !viagens.Any())
+                return false;
+
+            return viagens.Any(v => v.Status == StatusViagem.EmAndamento);
+        }
         public async Task<List<MotoristaCompletoDto>> ObterTodosMotoristasCompletos()
         {
             var motoristas = await _motoristaRepository.GetAllMotoristasCompletos();

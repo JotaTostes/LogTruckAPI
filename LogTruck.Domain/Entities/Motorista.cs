@@ -58,7 +58,11 @@ namespace LogTruck.Domain.Entities
             AtualizadoEm = DateTime.UtcNow;
         }
 
-        public void Desativar() => Ativo = false;
+        public void Desativar()
+        {
+            Ativo = false;
+        }
+
         public void Reativar() => Ativo = true;
     }
 }

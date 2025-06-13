@@ -43,6 +43,7 @@ namespace LogTruck.API.Controllers.v1
             var id = await _motoristaService.CreateAsync(dto);
             return CreatedAtAction(nameof(ObterPorId), new { id, version = "1.0" }, id);
         }
+
         [HttpPut("{id:guid}")]
         public async Task<IActionResult> Atualizar(Guid id, [FromBody] AtualizarMotoristaDto dto)
         {
@@ -54,7 +55,7 @@ namespace LogTruck.API.Controllers.v1
         public async Task<IActionResult> Deletar(Guid id)
         {
             await _motoristaService.DeleteAsync(id);
-            return NoContent();
+            return CustomResponse();
         }
 
         [HttpGet("motoristas-completos")]
