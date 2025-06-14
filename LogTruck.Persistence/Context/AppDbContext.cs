@@ -23,6 +23,17 @@ namespace LogTruck.Persistence.Context
             modelBuilder.Entity<Usuario>().HasQueryFilter(u => u.Ativo);
             modelBuilder.Entity<Motorista>().HasQueryFilter(m => m.Ativo);
             modelBuilder.Entity<Caminhao>().HasQueryFilter(c => c.Ativo);
+
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                if (typeof(BaseEntity).IsAssignableFrom(entityType.ClrType))
+                {
+                    modelBuilder.Entity(entityType.ClrType)
+                        .Property(nameof(BaseEntity.CriadoEm))
+                        .ValueGeneratedOnAdd()
+                        .IsRequired();
+                }
+            }
         }
     }
 }

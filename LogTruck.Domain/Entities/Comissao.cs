@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace LogTruck.Domain.Entities
 {
-    public class Comissao
+    public class Comissao : BaseEntity
     {
-        public Guid Id { get; private set; }
         public Guid ViagemId { get; set; }
         public decimal Percentual { get; set; }
         public decimal ValorCalculado { get; set; }
@@ -20,7 +19,6 @@ namespace LogTruck.Domain.Entities
 
         public Comissao(Guid viagemId, decimal percentual, decimal valorFrete)
         {
-            Id = Guid.NewGuid();
             ViagemId = viagemId;
             Percentual = percentual;
             ValorCalculado = CalcularComissao(valorFrete, percentual);

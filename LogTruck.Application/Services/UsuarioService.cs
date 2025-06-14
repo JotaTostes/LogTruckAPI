@@ -13,10 +13,14 @@ namespace LogTruck.Application.Services
     public class UsuarioService : IUsuarioService
     {
         private readonly IUsuarioRepository _repository;
+        private readonly ICurrentUserService _currentUserService;
+        private Guid _usuarioAlteracao;
 
-        public UsuarioService(IUsuarioRepository repository)
+        public UsuarioService(IUsuarioRepository repository, ICurrentUserService currentUserService)
         {
             _repository = repository;
+            _currentUserService = currentUserService;
+            _usuarioAlteracao = _currentUserService.UserId ?? Guid.Empty;
         }
 
         public async Task<Guid> CreateAsync(CreateUsuarioDto dto)
@@ -39,7 +43,7 @@ namespace LogTruck.Application.Services
                                 ? usuario.SenhaHash
                                 : PasswordHashHelper.Hash(dto.Senha);
 
-            usuario.Atualizar(dto.Nome, dto.Email, dto.Role, dto.Cpf, senhaHash);
+            usuario.Atualizar(dto.Nome, dto.Email, dto.Role, dto.Cpf, senhaHash, _usuarioAlteracao);
 
             _repository.Update(usuario);
             await _repository.SaveChangesAsync();
@@ -52,7 +56,7 @@ namespace LogTruck.Application.Services
             if (usuario == null)
                 throw new KeyNotFoundException("Usuário não encontrado.");
 
-            usuario.Desativar();
+            usuario.Desativar(_usuarioAlteracao);
             _repository.Update(usuario);
             await _repository.SaveChangesAsync();
 

@@ -25,6 +25,7 @@ namespace LogTruck.Application.DTOs.Viagem
         public string? DataRetorno { get; set; }
         public int Status { get; set; }
         public string StatusNome { get; set; }
+        public DateTime CriadoEm { get; set; }
 
         public List<CustoViagemDto> Custos { get; set; }
         public ComissaoDto? Comissao { get; set; }

@@ -1,4 +1,5 @@
-﻿using LogTruck.Application.DTOs.Caminhao;
+﻿using LogTruck.Application.Common.Security;
+using LogTruck.Application.DTOs.Caminhao;
 using LogTruck.Application.Interfaces.Repositories;
 using LogTruck.Application.Interfaces.Services;
 using LogTruck.Domain.Entities;
@@ -9,10 +10,14 @@ namespace LogTruck.Application.Services
     public class CaminhaoService : ICaminhaoService
     {
         private readonly ICaminhaoRepository _caminhaoRepository;
+        private readonly ICurrentUserService _currentUserService;
+        private Guid _usuarioAlteracao;
 
-        public CaminhaoService(ICaminhaoRepository caminhaoRepository)
+        public CaminhaoService(ICaminhaoRepository caminhaoRepository, ICurrentUserService currentUserService)
         {
             _caminhaoRepository = caminhaoRepository;
+            _currentUserService = currentUserService;
+            _usuarioAlteracao = _currentUserService.UserId ?? Guid.Empty;
         }
 
         public async Task<IEnumerable<CaminhaoDto>> ObterTodosAsync()
@@ -41,7 +46,7 @@ namespace LogTruck.Application.Services
             var caminhao = await _caminhaoRepository.GetByIdAsync(id)
                             ?? throw new KeyNotFoundException("Caminhao não encontrado");
 
-            caminhao.Atualizar(dto.Marca, dto.Modelo, dto.Placa, dto.Ano, dto.CapacidadeToneladas);
+            caminhao.Atualizar(dto.Marca, dto.Modelo, dto.Placa, dto.Ano, dto.CapacidadeToneladas, _usuarioAlteracao);
 
             _caminhaoRepository.Update(caminhao);
             await _caminhaoRepository.SaveChangesAsync();
@@ -52,7 +57,7 @@ namespace LogTruck.Application.Services
             var caminhao = await _caminhaoRepository.GetByIdAsync(id)
                             ?? throw new KeyNotFoundException("Caminhao não encontrado");
 
-            caminhao.Desativar();
+            caminhao.Desativar(_usuarioAlteracao);
             _caminhaoRepository.Update(caminhao);
             await _caminhaoRepository.SaveChangesAsync();
         }

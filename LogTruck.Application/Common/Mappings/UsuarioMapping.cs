@@ -10,19 +10,15 @@ namespace LogTruck.Application.Common.Mappers
     {
         public void Register(TypeAdapterConfig config)
         {
-                config
-                .NewConfig<UsuarioDto,Usuario>()
-                .Map(dest => dest.Motorista, src => src.Motorista)
-                .Ignore(dest => dest.SenhaHash)
-                .Ignore(dest => dest.CriadoEm)
-                .Ignore(dest => dest.AtualizadoEm);
+            config
+            .NewConfig<UsuarioDto, Usuario>()
+            .Map(dest => dest.Motorista, src => src.Motorista)
+            .Ignore(dest => dest.SenhaHash);
 
             config
                 .NewConfig<Usuario, UsuarioDto>()
                 .Map(dest => dest.Motorista, src => src.Motorista)
-                .Ignore(dest => dest.Motorista.Usuario)
-                .Ignore(dest => dest.CriadoEm)
-                .Ignore(dest => dest.AtualizadoEm);
+                .Ignore(dest => dest.Motorista.Usuario);
 
             config
                 .NewConfig<CreateUsuarioDto, Usuario>()

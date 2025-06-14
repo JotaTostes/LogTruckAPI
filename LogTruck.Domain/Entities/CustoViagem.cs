@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace LogTruck.Domain.Entities
 {
-    public class CustoViagem
+    public class CustoViagem : BaseEntity
     {
-        public Guid Id { get; set; }
         public Guid ViagemId { get; set; }
         public TipoCusto Tipo { get; set; }
         public decimal Valor { get; set; }
@@ -23,7 +22,6 @@ namespace LogTruck.Domain.Entities
 
         public CustoViagem(Guid viagemId, TipoCusto tipo, decimal valor, string? observacao = null)
         {
-            Id = Guid.NewGuid();
             ViagemId = viagemId;
             Tipo = tipo;
             Valor = valor;

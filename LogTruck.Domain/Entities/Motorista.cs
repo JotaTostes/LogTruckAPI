@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace LogTruck.Domain.Entities
 {
-    public class Motorista
+    public class Motorista : BaseEntity
     {
-        public Guid Id { get; private set; }
         public Guid UsuarioId { get; set; }
         public string Nome { get; set; }
         public string CPF { get; set; }
@@ -17,8 +16,6 @@ namespace LogTruck.Domain.Entities
         public string Telefone { get; set; }
         public bool Ativo { get; set; }
 
-        public DateTime CriadoEm { get; set; }
-        public DateTime AtualizadoEm { get; set; }
 
         // Navegação (viagens feitas por esse motorista)
         public ICollection<Viagem> Viagens { get; private set; }
@@ -28,7 +25,6 @@ namespace LogTruck.Domain.Entities
 
         public Motorista(Guid usuarioId, string nome, string cpf, string cnh, DateTime dataNascimento, string telefone)
         {
-            Id = Guid.NewGuid();
             UsuarioId = usuarioId;
             Nome = nome;
             CPF = cpf;
@@ -36,12 +32,10 @@ namespace LogTruck.Domain.Entities
             DataNascimento = dataNascimento;
             Telefone = telefone;
             Ativo = true;
-            CriadoEm = DateTime.UtcNow;
-            AtualizadoEm = DateTime.UtcNow;
             Viagens = new List<Viagem>();
         }
 
-        public void Atualizar(string? nome, string? telefone, string? cnh, DateTime? dataNascimento)
+        public void Atualizar(string? nome, string? telefone, string? cnh, DateTime? dataNascimento, Guid? usuarioAlteracao)
         {
             if (!string.IsNullOrWhiteSpace(nome))
                 Nome = nome;
@@ -56,6 +50,7 @@ namespace LogTruck.Domain.Entities
                 DataNascimento = dataNascimento.Value;
 
             AtualizadoEm = DateTime.UtcNow;
+            UsuarioAlteracaoId = usuarioAlteracao;
         }
 
         public void Desativar()

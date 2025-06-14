@@ -1,4 +1,5 @@
 ﻿using LogTruck.Application.Common.Notifications;
+using LogTruck.Application.Common.Security;
 using LogTruck.Application.DTOs.Comissao;
 using LogTruck.Application.DTOs.Motorista;
 using LogTruck.Application.Interfaces.Repositories;
@@ -14,16 +15,20 @@ namespace LogTruck.Application.Services
         private readonly IMotoristaRepository _motoristaRepository;
         private readonly IUsuarioRepository _usuarioRepository;
         private readonly IViagemRepository _viagemRepository;
+        private readonly ICurrentUserService _currentUserService;
+        private Guid _usuarioAlteracao;
         private readonly INotifier _notifier;
 
         public MotoristaService(INotifier notifier,IMotoristaRepository motoristaRepository,
             IUsuarioRepository usuarioRepository,
-            IViagemRepository viagemRepository)
+            IViagemRepository viagemRepository,ICurrentUserService currentUserService)
         {
             _notifier = notifier;
             _motoristaRepository = motoristaRepository;
             _usuarioRepository = usuarioRepository;
             _viagemRepository = viagemRepository;
+            _currentUserService = currentUserService;
+            _usuarioAlteracao = _currentUserService.UserId ?? Guid.Empty;
         }
 
         public async Task<IEnumerable<MotoristaDto>> ObterTodosAsync()
@@ -63,7 +68,8 @@ namespace LogTruck.Application.Services
                 dto.Nome,
                 dto.Telefone,
                 dto.Cnh,
-                dto.DataNascimento.GetValueOrDefault()
+                dto.DataNascimento.GetValueOrDefault(),
+                _usuarioAlteracao
             );
             _motoristaRepository.Update(motoristaAtualizar);
             await _motoristaRepository.SaveChangesAsync();
@@ -99,7 +105,6 @@ namespace LogTruck.Application.Services
             var motoristas = await _motoristaRepository.GetAllMotoristasCompletos();
             var motoristasDto = motoristas.Adapt<List<MotoristaCompletoDto>>();
 
-            // Corrigir possíveis problemas de mapeamento de comissões nas viagens
             foreach (var motorista in motoristasDto)
             {
                 var viagens = motorista.Viagens.Where(x => x.Status != StatusViagem.Cancelada.ToString());
@@ -109,7 +114,6 @@ namespace LogTruck.Application.Services
                 {
                     foreach (var viagem in viagens)
                     {
-                        // Se a comissão está null, tentar buscar da lista de comissões do motorista
                         if (viagem.Comissao == null && motorista.Comissoes != null)
                         {
                             var comissao = motorista.Comissoes.FirstOrDefault(c => c.ViagemId == viagem.Id);

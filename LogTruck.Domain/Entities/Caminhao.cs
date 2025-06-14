@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace LogTruck.Domain.Entities
 {
-    public class Caminhao
+    public class Caminhao : BaseEntity
     {
-        public Guid Id { get; private set; }
         public string Placa { get; private set; }
         public string Modelo { get; private set; }
         public string Marca { get; private set; }
@@ -16,8 +15,6 @@ namespace LogTruck.Domain.Entities
         public double CapacidadeToneladas { get; private set; }
         public bool Ativo { get; private set; }
 
-        public DateTime CriadoEm { get; private set; }
-        public DateTime AtualizadoEm { get; private set; }
 
         // Navegação
         public ICollection<Viagem> Viagens { get; private set; }
@@ -26,19 +23,16 @@ namespace LogTruck.Domain.Entities
 
         public Caminhao(string placa, string modelo, string marca, int ano, double capacidadeToneladas)
         {
-            Id = Guid.NewGuid();
             Placa = placa;
             Modelo = modelo;
             Marca = marca;
             Ano = ano;
             CapacidadeToneladas = capacidadeToneladas;
             Ativo = true;
-            CriadoEm = DateTime.UtcNow;
-            AtualizadoEm = DateTime.UtcNow;
             Viagens = new List<Viagem>();
         }
 
-        public void Atualizar(string? marca, string? modelo, string? placa, int? ano, double? capacidade)
+        public void Atualizar(string? marca, string? modelo, string? placa, int? ano, double? capacidade, Guid? usuarioAlteracao)
         {
             if (!string.IsNullOrWhiteSpace(marca))
                 Marca = marca;
@@ -56,9 +50,15 @@ namespace LogTruck.Domain.Entities
                 CapacidadeToneladas = capacidade.Value;
 
             AtualizadoEm = DateTime.UtcNow;
+            UsuarioAlteracaoId = usuarioAlteracao;
         }
 
-        public void Desativar() => Ativo = false;
+        public void Desativar(Guid? usuarioAlteracao)
+        {
+            Ativo = false;
+            AtualizadoEm = DateTime.UtcNow;
+            UsuarioAlteracaoId = usuarioAlteracao;
+        }
         public void Reativar() => Ativo = true;
     }
 }

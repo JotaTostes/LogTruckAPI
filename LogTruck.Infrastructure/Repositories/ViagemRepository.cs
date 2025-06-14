@@ -42,6 +42,7 @@ namespace LogTruck.Infrastructure.Repositories
                 MotoristaNome = v.Motorista.Nome,
                 CaminhaoPlaca = v.Caminhao.Placa,
                 StatusNome = v.Status.ToString(),
+                CriadoEm = v.CriadoEm,
                 Motorista = v.Motorista == null ? null : new MotoristaDto
                 {
                     Id = v.Motorista.Id,

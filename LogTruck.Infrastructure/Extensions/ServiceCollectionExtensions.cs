@@ -1,5 +1,7 @@
-﻿using LogTruck.Application.Interfaces.Repositories;
+﻿using LogTruck.Application.Common.Security;
+using LogTruck.Application.Interfaces.Repositories;
 using LogTruck.Infrastructure.Repositories;
+using LogTruck.Infrastructure.Security;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -20,6 +22,9 @@ namespace LogTruck.Infrastructure.Extensions
             services.AddScoped<IViagemRepository, ViagemRepository>();
             services.AddScoped<ICustoViagemRepository, CustoViagemRepository>();
             services.AddScoped<IComissaoRepository, ComissaoRepository>();
+
+            services.AddHttpContextAccessor();
+            services.AddScoped<ICurrentUserService, CurrentUserService>();
 
             return services;
         }
