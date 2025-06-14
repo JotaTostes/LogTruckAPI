@@ -32,21 +32,21 @@ namespace LogTruck.API.Controllers.v1
         public async Task<IActionResult> Update([FromBody] UpdateComissaoDto dto)
         {
             await _comissaoService.AtualizarAsync(dto);
-            return NoContent();
+            return CustomResponse();
         }
 
         [HttpPut("{id:guid}/pagar")]
         public async Task<IActionResult> SetarComoPago(Guid id)
         {
             await _comissaoService.SetarComoPago(id);
-            return NoContent();
+            return CustomResponse();
         }
 
         [HttpGet("{viagemId:guid}")]
         public async Task<IActionResult> GetByid(Guid id)
         {
             var resultado = await _comissaoService.ObterPorIdAsync(id);
-            return resultado is not null ? Ok(resultado) : NotFound();
+            return CustomResponse(resultado);
         }
 
         [HttpGet()]
@@ -62,7 +62,7 @@ namespace LogTruck.API.Controllers.v1
         public async Task<IActionResult> GetComissoesCompletas()
         {
             var resultado = await _comissaoService.GetComissoesCompletas();
-            return resultado is not null ? Ok(resultado) : NotFound();
+            return CustomResponse(resultado);
         }
     }
 }

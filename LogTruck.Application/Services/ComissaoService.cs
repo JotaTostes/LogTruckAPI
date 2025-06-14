@@ -1,4 +1,5 @@
-﻿using LogTruck.Application.DTOs.Comissao;
+﻿using LogTruck.Application.Common.Notifications;
+using LogTruck.Application.DTOs.Comissao;
 using LogTruck.Application.Interfaces.Repositories;
 using LogTruck.Application.Interfaces.Services;
 using LogTruck.Domain.Entities;
@@ -10,11 +11,13 @@ namespace LogTruck.Application.Services
     {
         private readonly IComissaoRepository _comissaoRepository;
         private readonly IViagemRepository _viagemRepository;
+        private readonly INotifier _notifier;
 
-        public ComissaoService(IComissaoRepository comissaoRepository, IViagemRepository viagemRepository)
+        public ComissaoService(IComissaoRepository comissaoRepository, IViagemRepository viagemRepository, INotifier notifier)
         {
             _comissaoRepository = comissaoRepository;
             _viagemRepository = viagemRepository;
+            _notifier = notifier;
         }
 
         public async Task<Guid> CreateAsync(CreateComissaoDto dto)
@@ -72,16 +75,20 @@ namespace LogTruck.Application.Services
 
         public async Task SetarComoPago(Guid id)
         {
-            var comissao = await _comissaoRepository.GetFirstAsync(x => x.Id == id)
-                             ?? throw new KeyNotFoundException("Comissão não encontrada.");
-
+            var comissao = await _comissaoRepository.GetFirstAsync(x => x.Id == id);
+            if (comissao == null)
+            {
+                _notifier.Handle(new Notification("Erro", "Comissão não encontrada"));
+                return;
+            }
             comissao.SetarComoPago();
 
-             var viagem = await _viagemRepository.GetFirstAsync(x => x.Id == comissao.ViagemId);
-
+            var viagem = await _viagemRepository.GetFirstAsync(x => x.Id == comissao.ViagemId);
             if (viagem == null)
-                throw new KeyNotFoundException("Viagem associada não encontrada.");
-
+            {
+                _notifier.Handle(new Notification("Erro", "Viagem associada não encontrada"));
+                return;
+            }
             viagem.MarcarComoConcluida(DateTime.Now);
 
             _comissaoRepository.Update(comissao);

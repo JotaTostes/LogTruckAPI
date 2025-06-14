@@ -103,24 +103,66 @@ namespace LogTruck.Application.Services
             await _viagemRepository.SaveChangesAsync();
         }
 
+
         public async Task AtualizarStatusViagem(Guid idViagem, int statusViagem)
         {
             var viagem = await _viagemRepository.GetByIdAsync(idViagem)
                           ?? throw new KeyNotFoundException("Viagem não encontrada.");
+
+            if (viagem.Status == StatusViagem.Concluida && statusViagem != (int)StatusViagem.Concluida)
+            {
+                _notifier.Handle(new Notification("Erro", "Não é possível alterar o status de uma viagem já concluída."));
+                return;
+            }
+
+            if (viagem.Status == StatusViagem.Cancelada)
+            {
+                _notifier.Handle(new Notification("Erro", "Não é possível alterar o status de uma viagem cancelada."));
+                return;
+            }
+
+            if ((int)viagem.Status == statusViagem)
+            {
+                _notifier.Handle(new Notification("Erro", "A viagem já está com o status informado."));
+                return;
+            }
+
+            // Validação de transições permitidas
+            bool transicaoValida = false;
+            switch (viagem.Status)
+            {
+                case StatusViagem.Planejada:
+                    transicaoValida = statusViagem == (int)StatusViagem.EmAndamento || statusViagem == (int)StatusViagem.Cancelada;
+                    break;
+                case StatusViagem.EmAndamento:
+                    transicaoValida = statusViagem == (int)StatusViagem.Concluida || statusViagem == (int)StatusViagem.Cancelada;
+                    break;
+                case StatusViagem.Concluida:
+                case StatusViagem.Cancelada:
+                    transicaoValida = false;
+                    break;
+                default:
+                    transicaoValida = false;
+                    break;
+            }
+
+            if (!transicaoValida)
+            {
+                _notifier.Handle(new Notification("Erro", "Transição de status inválida para a viagem."));
+                return;
+            }
+
             switch (statusViagem)
             {
                 case 1:
                     viagem.MarcarComoPlanejada();
                     break;
-
                 case 2:
                     viagem.MarcarComoEmAndamento();
                     break;
-
                 case 3:
                     viagem.MarcarComoConcluida(DateTime.Now);
                     break;
-
                 case 4:
                     viagem.Cancelar();
                     break;
