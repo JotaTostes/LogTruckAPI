@@ -11,5 +11,6 @@ namespace LogTruck.Application.Interfaces.Repositories
     {
         Task<IEnumerable<CustoViagem?>> GetByViagemIdAsync(Guid viagemId);
         Task<CustoViagem?> GetByIdAsync(Guid id);
+        Task<IEnumerable<CustoViagem?>> GetCustosCompletos();
     }
 }

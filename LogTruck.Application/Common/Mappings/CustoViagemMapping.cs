@@ -17,6 +17,8 @@ namespace LogTruck.Application.Common.Mappings
 
             config.NewConfig<UpdateCustoViagemDto, CustoViagem>()
                 .Ignore(dest => dest.DataRegistro);
+
+            config.NewConfig<CustoViagem, CustoViagemCompletoDto>();
         }
     }
 }

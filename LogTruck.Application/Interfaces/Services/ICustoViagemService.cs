@@ -14,5 +14,6 @@ namespace LogTruck.Application.Interfaces.Services
         Task AdicionarAsync(CreateCustoViagemDto dto);
         Task AtualizarAsync(UpdateCustoViagemDto dto);
         Task RemoverAsync(Guid id);
+        Task<IEnumerable<CustoViagemCompletoDto>> ObterCustosCompletosAsync();
     }
 }

@@ -56,7 +56,12 @@ namespace LogTruck.API.Controllers.v1
         public async Task<IActionResult> Delete(Guid id)
         {
             await _custoViagemService.RemoverAsync(id);
-            return NoContent();
+            return CustomResponse();
         }
+
+        [HttpGet("completo")]
+        public async Task<IActionResult> GetCustosCompletos() =>
+            CustomResponse(await _custoViagemService.ObterCustosCompletosAsync());
+
     }
 }

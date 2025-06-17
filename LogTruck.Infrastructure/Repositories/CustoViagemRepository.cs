@@ -24,5 +24,12 @@ namespace LogTruck.Infrastructure.Repositories
 
         public async Task<CustoViagem?> GetByIdAsync(Guid id)
                         => await _context.CustosViagem.FirstOrDefaultAsync(x => x.Id == id);
+        public async Task<IEnumerable<CustoViagem?>> GetCustosCompletos()
+        {
+            return await _context.CustosViagem
+                .Include(c => c.Viagem)
+                .ToListAsync();
+        }
+
     }
 }

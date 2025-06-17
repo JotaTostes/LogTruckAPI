@@ -76,5 +76,11 @@ namespace LogTruck.Application.Services
 
             _custoViagemRepository.Delete(custo);
         }
+        public async Task<IEnumerable<CustoViagemCompletoDto>> ObterCustosCompletosAsync()
+        {
+            var custos = await _custoViagemRepository.GetCustosCompletos();
+            return custos.Adapt<IEnumerable<CustoViagemCompletoDto>>();
+        }
+
     }
 }
