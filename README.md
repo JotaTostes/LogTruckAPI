@@ -1,6 +1,10 @@
+
 # 🚚 LogTruckAPI
 
-Bem-vindo ao **LogTruckAPI**! Este repositório contém uma API desenvolvida em .NET 9 para gerenciamento e monitoramento de operações logísticas de transporte de caminhões.
+![.NET](https://img.shields.io/badge/.NET-9.0-blueviolet)
+![License](https://img.shields.io/badge/license-MIT-green)
+
+Bem-vindo ao **LogTruckAPI** — uma API robusta desenvolvida em .NET 9 para gerenciar operações logísticas de transporte de caminhões. Ideal para empresas que precisam de controle completo sobre motoristas, caminhões, viagens e custos.
 
 ---
 
@@ -32,6 +36,7 @@ Diagrama simplificado:
 
 - **.NET 9**: Framework principal para desenvolvimento da API.
 - **ASP.NET Core**: Construção dos endpoints RESTful.
+- **JWT (JSON Web Token)**: Autenticação e controle de acesso baseado em tokens.
 - **Entity Framework Core**: ORM para persistência de dados.
 - **SQL Server**: Banco de dados relacional padrão.
 - **Swagger / Swashbuckle**: Documentação interativa da API.
