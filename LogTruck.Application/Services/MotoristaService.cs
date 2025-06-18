@@ -77,8 +77,13 @@ namespace LogTruck.Application.Services
 
         public async Task DeleteAsync(Guid id)
         {
-            var motorista = await _motoristaRepository.GetAllMotoristasCompletos(id)
-                            ?? throw new KeyNotFoundException("Motorista não encontrado.");
+            var motorista = await _motoristaRepository.GetAllMotoristasCompletos(id);
+
+            if (!motorista.Any())
+            {
+                _notifier.Handle(new Notification("Erro", "Motorista não encontrado."));
+                return;
+            }
 
             var motoristaParaDeletar = motorista.First();
 
