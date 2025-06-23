@@ -65,5 +65,20 @@ namespace LogTruck.API.Controllers.v1
             var motoristasCompletos = await _motoristaService.ObterTodosMotoristasCompletos();
             return Ok(motoristasCompletos);
         }
+
+        [HttpGet("deletados")]
+        [ProducesResponseType(typeof(List<MotoristaDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> ObterMotoristasInativos()
+        {
+            var motoristas = await _motoristaService.ObterTodosAsync();
+            return Ok(motoristas.Where(m => !m.Ativo).ToList());
+        }
+
+        [HttpPut("{id:guid}/reativar")]
+        public async Task<IActionResult> Reativar(Guid id)
+        {
+            await _motoristaService.ReativarMotorista(id);
+            return CustomResponse();
+        }
     }
 }

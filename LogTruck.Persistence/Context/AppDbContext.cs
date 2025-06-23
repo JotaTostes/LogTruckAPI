@@ -21,7 +21,6 @@ namespace LogTruck.Persistence.Context
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Usuario>().HasQueryFilter(u => u.Ativo);
-            modelBuilder.Entity<Motorista>().HasQueryFilter(m => m.Ativo);
             modelBuilder.Entity<Caminhao>().HasQueryFilter(c => c.Ativo);
 
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())

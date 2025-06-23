@@ -21,6 +21,7 @@ namespace LogTruck.Infrastructure.Repositories
             var query = _context.Motoristas
                 .Include(m => m.Viagens)
                     .ThenInclude(v => v.Comissao)
+                .Where(m => m.Ativo)
                 .AsQueryable();
 
             if (motoristaId.HasValue)

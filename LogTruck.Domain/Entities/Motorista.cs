@@ -53,11 +53,18 @@ namespace LogTruck.Domain.Entities
             UsuarioAlteracaoId = usuarioAlteracao;
         }
 
-        public void Desativar()
+        public void Desativar(Guid usuarioAlteracao)
         {
             Ativo = false;
+            AtualizadoEm = DateTime.UtcNow;
+            UsuarioAlteracaoId = usuarioAlteracao;
         }
 
-        public void Reativar() => Ativo = true;
+        public void Reativar(Guid usuarioAlteracao)
+        {
+            Ativo = true;
+            AtualizadoEm = DateTime.UtcNow;
+            UsuarioAlteracaoId = usuarioAlteracao;
+        }
     }
 }

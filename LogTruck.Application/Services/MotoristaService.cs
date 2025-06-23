@@ -19,9 +19,9 @@ namespace LogTruck.Application.Services
         private Guid _usuarioAlteracao;
         private readonly INotifier _notifier;
 
-        public MotoristaService(INotifier notifier,IMotoristaRepository motoristaRepository,
+        public MotoristaService(INotifier notifier, IMotoristaRepository motoristaRepository,
             IUsuarioRepository usuarioRepository,
-            IViagemRepository viagemRepository,ICurrentUserService currentUserService)
+            IViagemRepository viagemRepository, ICurrentUserService currentUserService)
         {
             _notifier = notifier;
             _motoristaRepository = motoristaRepository;
@@ -89,11 +89,11 @@ namespace LogTruck.Application.Services
 
             if (await MotoristaTemViagemEmAndamento(motoristaParaDeletar))
             {
-               _notifier.Handle(new Notification("Erro","Não é possível deletar o motorista, pois ele possui viagens em andamento."));
+                _notifier.Handle(new Notification("Erro", "Não é possível deletar o motorista, pois ele possui viagens em andamento."));
                 return;
             }
 
-            _motoristaRepository.Delete(motoristaParaDeletar);
+            motoristaParaDeletar.Desativar(_usuarioAlteracao);
             await _motoristaRepository.SaveChangesAsync();
         }
 
@@ -137,6 +137,25 @@ namespace LogTruck.Application.Services
             }
 
             return motoristasDto;
+        }
+
+        public async Task ReativarMotorista(Guid id)
+        {
+            var motorista = await _motoristaRepository.GetFirstAsync(x => x.Id == id);
+            if (motorista == null)
+            {
+                _notifier.Handle(new Notification("Erro","Motorista não encontrado."));
+                return;
+            }
+
+            if (motorista.Ativo)
+            {
+                _notifier.Handle(new Notification("Erro", "Motorista ja está ativo."));
+                return;
+            }
+
+            motorista.Reativar(_usuarioAlteracao);
+            await _motoristaRepository.SaveChangesAsync();
         }
     }
 }
