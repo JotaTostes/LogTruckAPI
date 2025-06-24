@@ -32,7 +32,7 @@ namespace LogTruck.Domain.Entities
             Viagens = new List<Viagem>();
         }
 
-        public void Atualizar(string? marca, string? modelo, string? placa, int? ano, double? capacidade, Guid? usuarioAlteracao)
+        public void Atualizar(string? marca, string? modelo, string? placa, int? ano, double? capacidade)
         {
             if (!string.IsNullOrWhiteSpace(marca))
                 Marca = marca;
@@ -48,17 +48,9 @@ namespace LogTruck.Domain.Entities
 
             if (capacidade.HasValue && capacidade.Value > 0)
                 CapacidadeToneladas = capacidade.Value;
-
-            AtualizadoEm = DateTime.UtcNow;
-            UsuarioAlteracaoId = usuarioAlteracao;
         }
 
-        public void Desativar(Guid? usuarioAlteracao)
-        {
-            Ativo = false;
-            AtualizadoEm = DateTime.UtcNow;
-            UsuarioAlteracaoId = usuarioAlteracao;
-        }
+        public void Desativar() => Ativo = false;
         public void Reativar() => Ativo = true;
     }
 }

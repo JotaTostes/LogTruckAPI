@@ -68,8 +68,7 @@ namespace LogTruck.Application.Services
                 dto.Nome,
                 dto.Telefone,
                 dto.Cnh,
-                dto.DataNascimento.GetValueOrDefault(),
-                _usuarioAlteracao
+                dto.DataNascimento.GetValueOrDefault()
             );
             _motoristaRepository.Update(motoristaAtualizar);
             await _motoristaRepository.SaveChangesAsync();
@@ -93,7 +92,7 @@ namespace LogTruck.Application.Services
                 return;
             }
 
-            motoristaParaDeletar.Desativar(_usuarioAlteracao);
+            motoristaParaDeletar.Desativar();
             await _motoristaRepository.SaveChangesAsync();
         }
 
@@ -144,7 +143,7 @@ namespace LogTruck.Application.Services
             var motorista = await _motoristaRepository.GetFirstAsync(x => x.Id == id);
             if (motorista == null)
             {
-                _notifier.Handle(new Notification("Erro","Motorista não encontrado."));
+                _notifier.Handle(new Notification("Erro", "Motorista não encontrado."));
                 return;
             }
 
@@ -154,7 +153,7 @@ namespace LogTruck.Application.Services
                 return;
             }
 
-            motorista.Reativar(_usuarioAlteracao);
+            motorista.Reativar();
             await _motoristaRepository.SaveChangesAsync();
         }
     }

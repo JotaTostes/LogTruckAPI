@@ -1,4 +1,5 @@
-﻿using LogTruck.Application.DTOs.Caminhao;
+﻿using LogTruck.Application.Common.Security;
+using LogTruck.Application.DTOs.Caminhao;
 using LogTruck.Application.DTOs.Comissao;
 using LogTruck.Application.DTOs.CustoViagem;
 using LogTruck.Application.DTOs.Motorista;
@@ -20,7 +21,7 @@ namespace LogTruck.Infrastructure.Repositories
     {
         private readonly AppDbContext _context;
 
-        public ViagemRepository(AppDbContext context) : base(context)
+        public ViagemRepository(AppDbContext context, ICurrentUserService currentUserService) : base(context, currentUserService)
         {
             _context = context;
         }

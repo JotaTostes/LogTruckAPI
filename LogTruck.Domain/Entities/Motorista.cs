@@ -35,7 +35,7 @@ namespace LogTruck.Domain.Entities
             Viagens = new List<Viagem>();
         }
 
-        public void Atualizar(string? nome, string? telefone, string? cnh, DateTime? dataNascimento, Guid? usuarioAlteracao)
+        public void Atualizar(string? nome, string? telefone, string? cnh, DateTime? dataNascimento)
         {
             if (!string.IsNullOrWhiteSpace(nome))
                 Nome = nome;
@@ -48,23 +48,10 @@ namespace LogTruck.Domain.Entities
 
             if (dataNascimento.HasValue && dataNascimento.Value != default)
                 DataNascimento = dataNascimento.Value;
-
-            AtualizadoEm = DateTime.UtcNow;
-            UsuarioAlteracaoId = usuarioAlteracao;
         }
 
-        public void Desativar(Guid usuarioAlteracao)
-        {
-            Ativo = false;
-            AtualizadoEm = DateTime.UtcNow;
-            UsuarioAlteracaoId = usuarioAlteracao;
-        }
+        public void Desativar() => Ativo = false;
 
-        public void Reativar(Guid usuarioAlteracao)
-        {
-            Ativo = true;
-            AtualizadoEm = DateTime.UtcNow;
-            UsuarioAlteracaoId = usuarioAlteracao;
-        }
+        public void Reativar() => Ativo = true;
     }
 }

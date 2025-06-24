@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using LogTruck.Application.Common.Security;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,11 +13,13 @@ namespace LogTruck.Infrastructure.Repositories
     {
         protected readonly DbContext _context;
         protected readonly DbSet<T> _dbSet;
+        protected readonly ICurrentUserService _currentUserService;
 
-        public BaseRepository(DbContext context)
+        public BaseRepository(DbContext context, ICurrentUserService currentUserService)
         {
             _context = context;
             _dbSet = context.Set<T>();
+            _currentUserService = currentUserService;
         }
 
         public async Task<T?> GetFirstAsync(Expression<Func<T, bool>> predicate)
@@ -47,7 +50,40 @@ namespace LogTruck.Infrastructure.Repositories
 
         public async Task SaveChangesAsync()
         {
+            SetUsuarioAlteracaoId();
+            SetAtualizadoEm();
             await _context.SaveChangesAsync();
+        }
+
+        private void SetUsuarioAlteracaoId()
+        {
+            var userId = _currentUserService.UserId;
+            foreach (var entry in _context.ChangeTracker.Entries<T>())
+            {
+                if (entry.State == EntityState.Added || entry.State == EntityState.Modified)
+                {
+                    var property = entry.Property("UsuarioAlteracaoId");
+                    if (property != null && property.Metadata != null)
+                    {
+                        property.CurrentValue = userId;
+                    }
+                }
+            }
+        }
+
+        private void SetAtualizadoEm()
+        {
+            foreach (var entry in _context.ChangeTracker.Entries<T>())
+            {
+                if (entry.State == EntityState.Modified)
+                {
+                    var property = entry.Property("AtualizadoEm");
+                    if (property != null && property.Metadata != null)
+                    {
+                        property.CurrentValue = DateTime.UtcNow;
+                    }
+                }
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using LogTruck.Application.Interfaces.Repositories;
+﻿using LogTruck.Application.Common.Security;
+using LogTruck.Application.Interfaces.Repositories;
 using LogTruck.Domain.Entities;
 using LogTruck.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
@@ -14,7 +15,7 @@ namespace LogTruck.Infrastructure.Repositories
     {
         private readonly AppDbContext _context;
 
-        public CustoViagemRepository(AppDbContext context) : base(context)
+        public CustoViagemRepository(AppDbContext context, ICurrentUserService currentUserService) : base(context, currentUserService)
         {
             _context = context;
         }

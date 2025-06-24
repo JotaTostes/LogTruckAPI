@@ -13,7 +13,7 @@ namespace LogTruck.Domain.Entities
         {
             Id = Guid.NewGuid();
             CriadoEm = DateTime.UtcNow;
-            AtualizadoEm = DateTime.UtcNow;
+            AtualizadoEm = null;
             UsuarioAlteracaoId = null;
         }
     }

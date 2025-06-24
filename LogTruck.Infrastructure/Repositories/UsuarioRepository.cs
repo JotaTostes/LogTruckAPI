@@ -1,4 +1,5 @@
-﻿using LogTruck.Application.Interfaces.Repositories;
+﻿using LogTruck.Application.Common.Security;
+using LogTruck.Application.Interfaces.Repositories;
 using LogTruck.Domain.Entities;
 using LogTruck.Domain.Enums;
 using LogTruck.Persistence.Context;
@@ -15,7 +16,7 @@ namespace LogTruck.Infrastructure.Repositories
     {
         private readonly AppDbContext _context;
 
-        public UsuarioRepository(AppDbContext context) : base(context)
+        public UsuarioRepository(AppDbContext context, ICurrentUserService currentUserService) : base(context, currentUserService)
         {
             _context = context;
         }

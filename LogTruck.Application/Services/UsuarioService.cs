@@ -43,7 +43,7 @@ namespace LogTruck.Application.Services
                                 ? usuario.SenhaHash
                                 : PasswordHashHelper.Hash(dto.Senha);
 
-            usuario.Atualizar(dto.Nome, dto.Email, dto.Role, dto.Cpf, senhaHash, _usuarioAlteracao);
+            usuario.Atualizar(dto.Nome, dto.Email, dto.Role, dto.Cpf, senhaHash);
 
             _repository.Update(usuario);
             await _repository.SaveChangesAsync();
@@ -56,7 +56,7 @@ namespace LogTruck.Application.Services
             if (usuario == null)
                 throw new KeyNotFoundException("Usuário não encontrado.");
 
-            usuario.Desativar(_usuarioAlteracao);
+            usuario.Desativar();
             _repository.Update(usuario);
             await _repository.SaveChangesAsync();
 

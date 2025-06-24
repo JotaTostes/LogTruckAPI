@@ -23,29 +23,16 @@ namespace LogTruck.Domain.Entities
             Ativo = true;
         }
 
-        public void Atualizar(string nome, string email, RoleUsuario role, string CPF, string Senha, Guid? usuarioAlteracao)
+        public void Atualizar(string nome, string email, RoleUsuario role, string CPF, string Senha)
         {
             Nome = nome;
             Email = email;
             Role = role;
             Cpf = CPF;
             SenhaHash = Senha;
-            AtualizadoEm = DateTime.UtcNow;
-            UsuarioAlteracaoId = usuarioAlteracao;
         }
 
-        public void Desativar(Guid? usuarioAlteracao)
-        {
-            Ativo = false;
-            AtualizadoEm = DateTime.UtcNow;
-            UsuarioAlteracaoId = usuarioAlteracao;
-        }
-
-        public void Reativar(Guid? usuarioAlteracao)
-        {
-            Ativo = true;
-            AtualizadoEm = DateTime.UtcNow;
-            UsuarioAlteracaoId = usuarioAlteracao;
-        }
+        public void Desativar() => Ativo = false;
+        public void Reativar() => Ativo = true;
     }
 }

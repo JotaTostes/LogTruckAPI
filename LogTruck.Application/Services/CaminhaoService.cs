@@ -46,7 +46,7 @@ namespace LogTruck.Application.Services
             var caminhao = await _caminhaoRepository.GetByIdAsync(id)
                             ?? throw new KeyNotFoundException("Caminhao não encontrado");
 
-            caminhao.Atualizar(dto.Marca, dto.Modelo, dto.Placa, dto.Ano, dto.CapacidadeToneladas, _usuarioAlteracao);
+            caminhao.Atualizar(dto.Marca, dto.Modelo, dto.Placa, dto.Ano, dto.CapacidadeToneladas);
 
             _caminhaoRepository.Update(caminhao);
             await _caminhaoRepository.SaveChangesAsync();
@@ -57,7 +57,7 @@ namespace LogTruck.Application.Services
             var caminhao = await _caminhaoRepository.GetByIdAsync(id)
                             ?? throw new KeyNotFoundException("Caminhao não encontrado");
 
-            caminhao.Desativar(_usuarioAlteracao);
+            caminhao.Desativar();
             _caminhaoRepository.Update(caminhao);
             await _caminhaoRepository.SaveChangesAsync();
         }
