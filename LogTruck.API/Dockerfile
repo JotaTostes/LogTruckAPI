@@ -7,17 +7,16 @@ WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
 
-
 # This stage is used to build the service project
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["Src/LogTruck.API/LogTruck.API.csproj", "LogTruck.API/"]
-COPY ["Src/LogTruck.Application/LogTruck.Application.csproj", "LogTruck.Application/"]
-COPY ["Src/LogTruck.Domain/LogTruck.Domain.csproj", "LogTruck.Domain/"]
-COPY ["Src/LogTruck.Infrastructure/LogTruck.Infrastructure.csproj", "LogTruck.Infrastructure/"]
-COPY ["Src/LogTruck.Persistence/LogTruck.Persistence.csproj", "LogTruck.Persistence/"]
-COPY ["Src/LogTruck.Shared/LogTruck.Shared.csproj", "LogTruck.Shared/"]
+COPY ["LogTruck.API/LogTruck.API.csproj", "LogTruck.API/"]
+COPY ["LogTruck.Application/LogTruck.Application.csproj", "LogTruck.Application/"]
+COPY ["LogTruck.Domain/LogTruck.Domain.csproj", "LogTruck.Domain/"]
+COPY ["LogTruck.Infrastructure/LogTruck.Infrastructure.csproj", "LogTruck.Infrastructure/"]
+COPY ["LogTruck.Persistence/LogTruck.Persistence.csproj", "LogTruck.Persistence/"]
+COPY ["LogTruck.Shared/LogTruck.Shared.csproj", "LogTruck.Shared/"]
 RUN dotnet restore "./LogTruck.API/LogTruck.API.csproj"
 COPY . .
 WORKDIR "/src/LogTruck.API"
