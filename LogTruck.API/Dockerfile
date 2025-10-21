@@ -12,20 +12,21 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["LogTruck.API/LogTruck.API.csproj", "LogTruck.API/"]
-COPY ["LogTruck.Application/LogTruck.Application.csproj", "LogTruck.Application/"]
-COPY ["LogTruck.Domain/LogTruck.Domain.csproj", "LogTruck.Domain/"]
-COPY ["LogTruck.Infrastructure/LogTruck.Infrastructure.csproj", "LogTruck.Infrastructure/"]
-COPY ["LogTruck.Persistence/LogTruck.Persistence.csproj", "LogTruck.Persistence/"]
-COPY ["LogTruck.Shared/LogTruck.Shared.csproj", "LogTruck.Shared/"]
+COPY ["../LogTruck.Application/LogTruck.Application.csproj", "LogTruck.Application/"]
+COPY ["../LogTruck.Domain/LogTruck.Domain.csproj", "LogTruck.Domain/"]
+COPY ["../LogTruck.Infrastructure/LogTruck.Infrastructure.csproj", "LogTruck.Infrastructure/"]
+COPY ["../LogTruck.Persistence/LogTruck.Persistence.csproj", "LogTruck.Persistence/"]
+COPY ["../LogTruck.Shared/LogTruck.Shared.csproj", "LogTruck.Shared/"]
 RUN dotnet restore "./LogTruck.API/LogTruck.API.csproj"
-COPY . .
+COPY . ./LogTruck.API/
+COPY ../ .
 WORKDIR "/src/LogTruck.API"
 RUN dotnet build "./LogTruck.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./LogTruck.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "LogTruck.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
