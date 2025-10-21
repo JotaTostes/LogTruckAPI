@@ -11,15 +11,22 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
+
+# Copiar todos os .csproj (agora sem ../ porque está na raiz)
 COPY ["LogTruck.API/LogTruck.API.csproj", "LogTruck.API/"]
-COPY ["../LogTruck.Application/LogTruck.Application.csproj", "LogTruck.Application/"]
-COPY ["../LogTruck.Domain/LogTruck.Domain.csproj", "LogTruck.Domain/"]
-COPY ["../LogTruck.Infrastructure/LogTruck.Infrastructure.csproj", "LogTruck.Infrastructure/"]
-COPY ["../LogTruck.Persistence/LogTruck.Persistence.csproj", "LogTruck.Persistence/"]
-COPY ["../LogTruck.Shared/LogTruck.Shared.csproj", "LogTruck.Shared/"]
+COPY ["LogTruck.Application/LogTruck.Application.csproj", "LogTruck.Application/"]
+COPY ["LogTruck.Domain/LogTruck.Domain.csproj", "LogTruck.Domain/"]
+COPY ["LogTruck.Infrastructure/LogTruck.Infrastructure.csproj", "LogTruck.Infrastructure/"]
+COPY ["LogTruck.Persistence/LogTruck.Persistence.csproj", "LogTruck.Persistence/"]
+COPY ["LogTruck.Shared/LogTruck.Shared.csproj", "LogTruck.Shared/"]
+
+# Restore
 RUN dotnet restore "./LogTruck.API/LogTruck.API.csproj"
-COPY . ./LogTruck.API/
-COPY ../ .
+
+# Copiar todo o código fonte
+COPY . .
+
+# Build
 WORKDIR "/src/LogTruck.API"
 RUN dotnet build "./LogTruck.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
