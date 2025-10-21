@@ -1,10 +1,19 @@
+using LogTruck.API.Configuration;
+using LogTruck.API.Configurations;
+using LogTruck.API.Middlewares;
+using Mapster;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerWithVersioning();
+builder.Services.AddMapster();
 builder.Services.AddOpenApi();
+
+builder.Services.AddProjectDependencies(builder.Configuration);
 
 var app = builder.Build();
 
@@ -13,10 +22,18 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+app.UseMiddleware<ExceptionMiddleware>();
+app.UseCors(policy =>
+    policy.AllowAnyOrigin()
+          .AllowAnyHeader()
+          .AllowAnyMethod()
+);
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
+app.UseSwaggerWithVersioning();
 
 app.MapControllers();
 

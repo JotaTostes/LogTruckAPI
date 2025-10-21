@@ -1,0 +1,36 @@
+﻿using LogTruck.Application.DTOs.Usuarios;
+using LogTruck.Domain.Entities;
+using Mapster;
+using LogTruck.Application.Common.Security;
+using LogTruck.Domain.Enums;
+
+namespace LogTruck.Application.Common.Mappers
+{
+    public class UsuarioMapping : IRegister
+    {
+        public void Register(TypeAdapterConfig config)
+        {
+            config
+            .NewConfig<UsuarioDto, Usuario>()
+            .Map(dest => dest.Motorista, src => src.Motorista)
+            .Ignore(dest => dest.SenhaHash);
+
+            config
+                .NewConfig<Usuario, UsuarioDto>()
+                .Map(dest => dest.Motorista, src => src.Motorista)
+                .Ignore(dest => dest.Motorista.Usuario);
+
+            config
+                .NewConfig<CreateUsuarioDto, Usuario>()
+                .Map(dest => dest.Id, _ => Guid.NewGuid())
+                .Map(dest => dest.Nome, src => src.Nome)
+                .Map(dest => dest.Email, src => src.Email)
+                .Map(dest => dest.SenhaHash, src => PasswordHashHelper.Hash(src.Senha))
+                .Map(dest => dest.Role, src => (RoleUsuario)src.Role)
+                .Map(dest => dest.Ativo, _ => true)
+                .Map(dest => dest.CriadoEm, _ => DateTime.UtcNow)
+                .Map(dest => dest.AtualizadoEm, _ => DateTime.UtcNow)
+                .Ignore(dest => dest.Motorista);
+        }
+    }
+}
