@@ -10,9 +10,9 @@ namespace LogTruck.Application.Interfaces.Services
 {
     public interface IUsuarioService
     {
-        Task<Guid> CreateAsync(CreateUsuarioDto dto);
+        Task<UsuarioDto> CreateAsync(CreateUsuarioDto dto);
         Task UpdateAsync(Guid id, UpdateUsuarioDto dto);
-        Task<bool> Desativar(Guid id);
+        Task Desativar(Guid id);
         Task<UsuarioDto?> GetByIdAsync(Guid id);
         Task<IEnumerable<UsuarioDto>> GetAllAsync();
         Task<Usuario?> GetByEmailAsync(string email);

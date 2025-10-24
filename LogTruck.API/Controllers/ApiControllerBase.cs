@@ -1,4 +1,5 @@
 ﻿using LogTruck.Application.Common.Notifications;
+using LogTruck.Shared.Responses;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LogTruck.API.Controllers
@@ -13,20 +14,43 @@ namespace LogTruck.API.Controllers
             _notifier = notifier;
         }
 
-        protected ActionResult CustomResponse(object? result = null)
+        protected IActionResult CustomResponse<T>(T? result = default, int statusCode = 200)
         {
             if (!_notifier.HasNotification())
-                return Ok(result);
-
-            return BadRequest(new
             {
-                errors = _notifier.GetNotifications().Select(n => n.Message)
-            });
+                return StatusCode(statusCode, ApiResponse<T>.SuccessResponse(result, statusCode));
+            }
+
+            var errors = _notifier.GetNotifications().Select(n => n.Message);
+            return BadRequest(ApiResponse<T>.ErrorResponse(errors));
         }
 
-        protected void NotifyError(string key, string message)
+        protected IActionResult CustomNoContentResponse(int statusCode = 204)
         {
-            _notifier.Handle(new Notification(key, message));
+            if (!_notifier.HasNotification())
+            {
+                return StatusCode(statusCode, ApiResponse.SuccessNoContent(statusCode));
+            }
+
+            var errors = _notifier.GetNotifications().Select(n => n.Message);
+            return BadRequest(ApiResponse.ErrorResponse(errors));
+        }
+
+        protected IActionResult CustomUnauthorizedResponse<T>(T? result = default ,int statusCode = 200)
+        {
+            if (!_notifier.HasNotification())
+            {
+                return StatusCode(statusCode, ApiResponse.SuccessNoContent(statusCode));
+            }
+
+            var errors = _notifier.GetNotifications().Select(n => n.Message);
+            return Unauthorized(ApiResponse.ErrorResponse(errors));
+        }
+
+
+        protected void NotifyError(string message)
+        {
+            _notifier.Handle("Erro", message);
         }
     }
 }

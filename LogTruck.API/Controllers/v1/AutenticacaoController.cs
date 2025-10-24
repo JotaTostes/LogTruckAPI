@@ -31,21 +31,26 @@ namespace LogTruck.API.Controllers.v1
             var usuario = await _usuarioService.GetByEmailAsync(loginRequest.Email);
 
             if (usuario == null || !PasswordHashHelper.Verify(usuario.SenhaHash, loginRequest.Senha))
-                return Unauthorized(new { mensagem = "Credenciais inválidas." });
+            {
+                NotifyError("Credenciais inválidas.");
+                return CustomResponse<LoginResponseDto>(null);
+            }
 
             var token = _tokenService.GerarToken(usuario);
 
-            return Ok(new
+
+            return CustomResponse(new LoginResponseDto
             {
-                token,
-                usuario = new
+                Token = token,
+                Usuario = new UsuarioInfos
                 {
-                    Id = usuario.Id,
-                    Nome = usuario.Nome,
                     Email = usuario.Email,
-                    Role = usuario.Role.ToString()
+                    Nome = usuario.Nome,
+                    Role = usuario.Role.ToString(),
+                    Id = usuario.Id
                 }
             });
+
         }
     }
 }

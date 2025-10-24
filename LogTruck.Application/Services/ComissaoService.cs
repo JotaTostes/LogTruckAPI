@@ -7,42 +7,58 @@ using Mapster;
 
 namespace LogTruck.Application.Services
 {
-    public class ComissaoService : IComissaoService
+    public class ComissaoService : BaseService, IComissaoService
     {
         private readonly IComissaoRepository _comissaoRepository;
         private readonly IViagemRepository _viagemRepository;
-        private readonly INotifier _notifier;
 
-        public ComissaoService(IComissaoRepository comissaoRepository, IViagemRepository viagemRepository, INotifier notifier)
+        public ComissaoService(INotifier notifier, IComissaoRepository comissaoRepository, IViagemRepository viagemRepository) : base(notifier)
         {
             _comissaoRepository = comissaoRepository;
             _viagemRepository = viagemRepository;
-            _notifier = notifier;
         }
 
-        public async Task<Guid> CreateAsync(CreateComissaoDto dto)
+        public async Task<ComissaoDto> CreateAsync(CreateComissaoDto dto)
         {
-            var viagem = await _viagemRepository.GetByIdAsync(dto.ViagemId)
-                          ?? throw new KeyNotFoundException("Viagem não encontrada.");
+            var viagem = await _viagemRepository.GetByIdAsync(dto.ViagemId);
+
+            if (viagem is null)
+            {
+                NotifyError("Viagem não encontrada");
+                return null;
+            }
 
             if (await _comissaoRepository.ExistePorViagemIdAsync(dto.ViagemId))
-                throw new InvalidOperationException("Já existe uma comissão registrada para esta viagem.");
+            {
+                NotifyError("Já existe uma comissão registrada para esta viagem");
+                return null;
+            }
 
             var valorCalculado = viagem.ValorFrete * (dto.Percentual / 100);
 
             var comissao = new Comissao(dto.ViagemId, dto.Percentual, valorCalculado);
             await _comissaoRepository.AddAsync(comissao);
 
-            return comissao.Id;
+            return comissao.Adapt<ComissaoDto>();
         }
 
         public async Task AtualizarAsync(UpdateComissaoDto dto)
         {
-            var comissao = await _comissaoRepository.GetByIdAsync(dto.Id)
-                             ?? throw new KeyNotFoundException("Comissão não encontrada.");
+            var comissao = await _comissaoRepository.GetByIdAsync(dto.Id);
 
-            var viagem = await _viagemRepository.GetByIdAsync(comissao.ViagemId)
-                          ?? throw new KeyNotFoundException("Viagem associada não encontrada.");
+            if (comissao is null)
+            {
+                NotifyError("Comissão não encontrada");
+                return;
+            }
+
+            var viagem = await _viagemRepository.GetFirstAsync(x => x.Id == comissao.ViagemId);
+
+            if (viagem is null)
+            {
+                NotifyError("Viagem associada não encontrada");
+                return;
+            }
 
             var valorCalculado = viagem.ValorFrete * (dto.Percentual / 100);
             comissao.Atualizar(dto.Percentual, valorCalculado);
@@ -53,8 +69,13 @@ namespace LogTruck.Application.Services
 
         public async Task<ComissaoDto> ObterPorIdAsync(Guid id)
         {
-            var comissao = await _comissaoRepository.GetByIdAsync(id)
-                             ?? throw new KeyNotFoundException("Comissão não encontrada.");
+            var comissao = await _comissaoRepository.GetByIdAsync(id);
+
+            if (comissao is null)
+            {
+                NotifyError("Comissão não encontrada");
+                return null;
+            }
 
             return comissao.Adapt<ComissaoDto>();
         }
@@ -67,8 +88,13 @@ namespace LogTruck.Application.Services
 
         public async Task RemoverAsync(Guid id)
         {
-            var comissao = await _comissaoRepository.GetByIdAsync(id)
-                             ?? throw new KeyNotFoundException("Comissão não encontrada.");
+            var comissao = await _comissaoRepository.GetByIdAsync(id);
+
+            if (comissao is null)
+            {
+                NotifyError("Comissão não encontrada");
+                return;
+            }
 
             _comissaoRepository.Delete(comissao);
         }
@@ -78,17 +104,19 @@ namespace LogTruck.Application.Services
             var comissao = await _comissaoRepository.GetFirstAsync(x => x.Id == id);
             if (comissao == null)
             {
-                _notifier.Handle(new Notification("Erro", "Comissão não encontrada"));
+                NotifyError("Comissão não encontrada");
                 return;
             }
+
             comissao.SetarComoPago();
 
             var viagem = await _viagemRepository.GetFirstAsync(x => x.Id == comissao.ViagemId);
             if (viagem == null)
             {
-                _notifier.Handle(new Notification("Erro", "Viagem associada não encontrada"));
+                NotifyError("Viagem associada não encontrada");
                 return;
             }
+
             viagem.MarcarComoConcluida(DateTime.Now);
 
             _comissaoRepository.Update(comissao);
