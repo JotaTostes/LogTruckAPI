@@ -31,6 +31,7 @@
     <ProjectReference Include="..\LogTruck.Application\LogTruck.Application.csproj" />
     <ProjectReference Include="..\LogTruck.Infrastructure\LogTruck.Infrastructure.csproj" />
     <ProjectReference Include="..\LogTruck.Persistence\LogTruck.Persistence.csproj" />
+    <ProjectReference Include="..\LogTruck.Shared\LogTruck.Shared.csproj" />
   </ItemGroup>
 
 </Project>

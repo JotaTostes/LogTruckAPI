@@ -1,7 +1,9 @@
 ﻿using Asp.Versioning;
 using LogTruck.Application.Common.Notifications;
+using LogTruck.Application.DTOs.Motorista;
 using LogTruck.Application.DTOs.Usuarios;
 using LogTruck.Application.Interfaces.Services;
+using LogTruck.Shared.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -22,57 +24,57 @@ namespace LogTruck.API.Controllers.v1
 
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<UsuarioDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse<>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetAll()
         {
-            var usuarios = await _usuarioService.GetAllAsync();
-            return Ok(usuarios);
+            var response = await _usuarioService.GetAllAsync();
+            return CustomResponse(response);
         }
 
         [HttpGet("usuarios-motoristas")]
         [ProducesResponseType(typeof(IEnumerable<UsuarioDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse<>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetUsuariosMotoristas()
         {
-            var usuarios = await _usuarioService.GetUsuariosMotoristas();
-            return Ok(usuarios);
+            var response = await _usuarioService.GetUsuariosMotoristas();
+            return CustomResponse(response);
         }
 
         [HttpGet("{id:guid}")]
-        [ProducesResponseType(typeof(UsuarioDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse<UsuarioDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse<>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetById(Guid id)
         {
-            var usuario = await _usuarioService.GetByIdAsync(id);
-            return usuario is null ? NotFound() : Ok(usuario);
+            var response = await _usuarioService.GetByIdAsync(id);
+            return CustomResponse(response);
         }
 
         [Authorize(Roles = "Administrador")]
         [HttpPost]
+        [ProducesResponseType(typeof(ApiResponse<UsuarioDto>), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ApiResponse<>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create([FromBody] CreateUsuarioDto dto)
         {
-            var usuarioCriado = await _usuarioService.CreateAsync(dto);
-            return CreatedAtAction(nameof(GetById), new { id = usuarioCriado }, usuarioCriado);
+            var response = await _usuarioService.CreateAsync(dto);
+            return CustomResponse(CreatedAtAction(nameof(GetById), new { id = response.Id }, response), 201);
         }
 
         [HttpPut("{id:guid}")]
+        [ProducesResponseType(typeof(ApiResponse<>), StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ApiResponse<>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Update(Guid id, [FromBody] UpdateUsuarioDto dto)
         {
-
-            try
-            {
-                await _usuarioService.UpdateAsync(id, dto);
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return NotFound(ex.Message);
-            }
+            await _usuarioService.UpdateAsync(id, dto);
+            return CustomNoContentResponse();
         }
 
         [HttpDelete("{id:guid}")]
-        [ProducesResponseType(typeof(HttpStatusCode), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Desativar(Guid id)
+        [ProducesResponseType(typeof(ApiResponse<>), StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ApiResponse<>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Delete(Guid id)
         {
-            var removido = await _usuarioService.Desativar(id);
-            return removido ? NoContent() : NotFound();
+            await _usuarioService.Desativar(id);
+            return CustomNoContentResponse();
         }
     }
 }

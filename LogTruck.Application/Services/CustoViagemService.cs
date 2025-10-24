@@ -14,17 +14,15 @@ using System.Threading.Tasks;
 
 namespace LogTruck.Application.Services
 {
-    public class CustoViagemService : ICustoViagemService
+    public class CustoViagemService : BaseService, ICustoViagemService
     {
         private readonly ICustoViagemRepository _custoViagemRepository;
         private readonly IViagemRepository _viagemRepository;
-        private readonly INotifier _notifier;
 
-        public CustoViagemService(INotifier notifier, ICustoViagemRepository custoViagemRepository, IViagemRepository viagemRepository)
+        public CustoViagemService(INotifier notifier, ICustoViagemRepository custoViagemRepository, IViagemRepository viagemRepository) : base(notifier)
         {
             _custoViagemRepository = custoViagemRepository;
             _viagemRepository = viagemRepository;
-            _notifier = notifier;
         }
 
         public async Task<IEnumerable<CustoViagemDto>> ObterPorViagemAsync(Guid viagemId)
@@ -39,29 +37,35 @@ namespace LogTruck.Application.Services
             return custo?.Adapt<CustoViagemDto>();
         }
 
-        public async Task AdicionarAsync(CreateCustoViagemDto dto)
+        public async Task<CustoViagemDto> AdicionarAsync(CreateCustoViagemDto dto)
         {
             var viagem = await _viagemRepository.GetByIdAsync(dto.ViagemId);
             if (viagem is null)
             {
-                _notifier.Handle(new Notification("Erro", "Viagem não encontrada."));
-                return;
+                NotifyError("Viagem não encontrada.");
+                return null;
             }
 
             if (viagem.Status == StatusViagem.Concluida)
             {
-                _notifier.Handle(new Notification("Erro", "Não é possível lançar custos em viagens concluídas."));
-                return;
+                NotifyError("Não é possível lançar custos em viagens concluídas.");
+                return null;
             }
 
             var custo = dto.Adapt<CustoViagem>();
             await _custoViagemRepository.AddAsync(custo);
+
+            return custo.Adapt<CustoViagemDto>();
         }
 
         public async Task AtualizarAsync(UpdateCustoViagemDto dto)
         {
-            var custo = await _custoViagemRepository.GetByIdAsync(dto.Id)
-                ?? throw new KeyNotFoundException("Custo não encontrado.");
+            var custo = await _custoViagemRepository.GetByIdAsync(dto.Id);
+
+            if (custo is null)
+            {
+                NotifyError("Custo não encontrado.");
+            }
 
             custo = dto.Adapt<CustoViagem>();
 
@@ -71,8 +75,12 @@ namespace LogTruck.Application.Services
 
         public async Task RemoverAsync(Guid id)
         {
-            var custo = await _custoViagemRepository.GetByIdAsync(id)
-                ?? throw new KeyNotFoundException("Custo não encontrado.");
+            var custo = await _custoViagemRepository.GetByIdAsync(id);
+
+            if (custo is null)
+            {
+                NotifyError("Custo não encontrado.");
+            }
 
             _custoViagemRepository.Delete(custo);
         }

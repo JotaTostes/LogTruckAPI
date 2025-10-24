@@ -3,6 +3,7 @@ using LogTruck.Application.Common.Notifications;
 using LogTruck.Application.DTOs.Motorista;
 using LogTruck.Application.DTOs.Usuarios;
 using LogTruck.Application.Interfaces.Services;
+using LogTruck.Shared.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -23,62 +24,74 @@ namespace LogTruck.API.Controllers.v1
         }
 
         [HttpGet]
-        public async Task<IActionResult> ObterTodos()
+        [ProducesResponseType(typeof(ApiResponse<IEnumerable<MotoristaDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse),StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetAllAsync()
         {
             var motoristas = await _motoristaService.ObterTodosAsync();
-            return Ok(motoristas);
+            return CustomResponse(motoristas);
         }
 
         [HttpGet("{id:guid}")]
-        [ProducesResponseType(typeof(MotoristaDto), StatusCodes.Status200OK)]
-        public async Task<IActionResult> ObterPorId(Guid id)
+        [ProducesResponseType(typeof(ApiResponse<MotoristaDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetById(Guid id)
         {
-            var motorista = await _motoristaService.GetById(id);
-            return Ok(motorista);
+            var response = await _motoristaService.GetById(id);
+            return CustomResponse(response);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Criar([FromBody] CreateMotoristaDto dto)
+        [ProducesResponseType(typeof(ApiResponse<MotoristaDto>), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ApiResponse<>),StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Create([FromBody] CreateMotoristaDto dto)
         {
-            var id = await _motoristaService.CreateAsync(dto);
-            return CreatedAtAction(nameof(ObterPorId), new { id, version = "1.0" }, id);
+            var response = await _motoristaService.CreateAsync(dto);
+            return CustomResponse(CreatedAtAction(nameof(GetById), new { id = response.Id}, response),201);
         }
 
         [HttpPut("{id:guid}")]
-        public async Task<IActionResult> Atualizar(Guid id, [FromBody] AtualizarMotoristaDto dto)
+        [ProducesResponseType(typeof(ApiResponse<>), StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ApiResponse<>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Update(Guid id, [FromBody] AtualizarMotoristaDto dto)
         {
             await _motoristaService.UpdateAsync(dto);
-            return NoContent();
+            return CustomNoContentResponse();
         }
 
         [HttpDelete("{id:guid}")]
-        public async Task<IActionResult> Deletar(Guid id)
+        [ProducesResponseType(typeof(ApiResponse<>),StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ApiResponse<>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Delete(Guid id)
         {
             await _motoristaService.DeleteAsync(id);
-            return CustomResponse();
+            return CustomNoContentResponse();
         }
 
         [HttpGet("motoristas-completos")]
         [ProducesResponseType(typeof(List<MotoristaCompletoDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> ObterMotoristasCompletos()
+        public async Task<IActionResult> GetMotoristasCompletos()
         {
-            var motoristasCompletos = await _motoristaService.ObterTodosMotoristasCompletos();
-            return Ok(motoristasCompletos);
+            var response = await _motoristaService.ObterTodosMotoristasCompletos();
+            return CustomResponse(response);
         }
 
         [HttpGet("deletados")]
-        [ProducesResponseType(typeof(List<MotoristaDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> ObterMotoristasInativos()
+        [ProducesResponseType(typeof(IEnumerable<MotoristaDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetMotoristasInativos()
         {
             var motoristas = await _motoristaService.ObterTodosAsync();
-            return Ok(motoristas.Where(m => !m.Ativo).ToList());
+            return CustomResponse(motoristas.Where(m => !m.Ativo).ToList());
         }
 
         [HttpPut("{id:guid}/reativar")]
+        [ProducesResponseType(typeof(ApiResponse<>), StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ApiResponse<>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Reativar(Guid id)
         {
             await _motoristaService.ReativarMotorista(id);
-            return CustomResponse();
+            return CustomNoContentResponse();
         }
     }
 }

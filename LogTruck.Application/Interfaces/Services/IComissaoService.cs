@@ -9,7 +9,7 @@ namespace LogTruck.Application.Interfaces.Services
 {
     public interface IComissaoService
     {
-        Task<Guid> CreateAsync(CreateComissaoDto dto);
+        Task<ComissaoDto> CreateAsync(CreateComissaoDto dto);
         Task AtualizarAsync(UpdateComissaoDto dto);
         Task<ComissaoDto> ObterPorIdAsync(Guid id);
         Task<IEnumerable<ComissaoDto>> ObterTodosAsync();
