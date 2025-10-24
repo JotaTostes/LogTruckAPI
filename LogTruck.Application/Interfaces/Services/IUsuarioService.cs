@@ -12,7 +12,7 @@ namespace LogTruck.Application.Interfaces.Services
     {
         Task<UsuarioDto> CreateAsync(CreateUsuarioDto dto);
         Task UpdateAsync(Guid id, UpdateUsuarioDto dto);
-        Task<bool> Desativar(Guid id);
+        Task Desativar(Guid id);
         Task<UsuarioDto?> GetByIdAsync(Guid id);
         Task<IEnumerable<UsuarioDto>> GetAllAsync();
         Task<Usuario?> GetByEmailAsync(string email);
