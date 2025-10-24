@@ -6,7 +6,7 @@ namespace LogTruck.Application.Interfaces.Services
     {
         Task<IEnumerable<MotoristaDto>> ObterTodosAsync();
         Task<MotoristaDto> GetById(Guid id);
-        Task<Guid> CreateAsync(CreateMotoristaDto dto);
+        Task<MotoristaDto> CreateAsync(CreateMotoristaDto dto);
         Task UpdateAsync(AtualizarMotoristaDto dto);
         Task DeleteAsync(Guid id);
         Task<List<MotoristaCompletoDto>> ObterTodosMotoristasCompletos();

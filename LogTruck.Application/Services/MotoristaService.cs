@@ -10,20 +10,18 @@ using Mapster;
 
 namespace LogTruck.Application.Services
 {
-    public class MotoristaService : IMotoristaService
+    public class MotoristaService : BaseService, IMotoristaService
     {
         private readonly IMotoristaRepository _motoristaRepository;
         private readonly IUsuarioRepository _usuarioRepository;
         private readonly IViagemRepository _viagemRepository;
         private readonly ICurrentUserService _currentUserService;
         private Guid _usuarioAlteracao;
-        private readonly INotifier _notifier;
 
         public MotoristaService(INotifier notifier, IMotoristaRepository motoristaRepository,
             IUsuarioRepository usuarioRepository,
-            IViagemRepository viagemRepository, ICurrentUserService currentUserService)
+            IViagemRepository viagemRepository, ICurrentUserService currentUserService) : base(notifier)
         {
-            _notifier = notifier;
             _motoristaRepository = motoristaRepository;
             _usuarioRepository = usuarioRepository;
             _viagemRepository = viagemRepository;
@@ -45,24 +43,35 @@ namespace LogTruck.Application.Services
             return motorista.Adapt<MotoristaDto>();
         }
 
-        public async Task<Guid> CreateAsync(CreateMotoristaDto dto)
+        public async Task<MotoristaDto> CreateAsync(CreateMotoristaDto dto)
         {
             var motorista = dto.Adapt<Motorista>();
 
-            var usuario = await _usuarioRepository.GetByIdAsync(dto.UsuarioId)
-                            ?? throw new KeyNotFoundException("Usuário não encontrado.");
+            var usuario = await _usuarioRepository.GetByIdAsync(dto.UsuarioId);
+
+            if(motorista is null)
+            {
+                NotifyError("Usuario do motorista não encontrado");
+                return null;
+            }
 
             motorista.CPF = usuario.Cpf;
             motorista.Nome = usuario.Nome;
 
             await _motoristaRepository.AddAsync(motorista);
-            return motorista.Id;
+
+            return motorista.Adapt<MotoristaDto>();
         }
 
         public async Task UpdateAsync(AtualizarMotoristaDto dto)
         {
-            var motoristaAtualizar = await _motoristaRepository.GetByIdAsync(dto.Id)
-                            ?? throw new KeyNotFoundException("Motorista não encontrado.");
+            var motoristaAtualizar = await _motoristaRepository.GetByIdAsync(dto.Id);
+
+            if (motoristaAtualizar is null)
+            {
+                NotifyError("Motorista não encontrado.");
+                return;
+            }
 
             motoristaAtualizar.Atualizar(
                 dto.Nome,
@@ -70,6 +79,7 @@ namespace LogTruck.Application.Services
                 dto.Cnh,
                 dto.DataNascimento.GetValueOrDefault()
             );
+
             _motoristaRepository.Update(motoristaAtualizar);
             await _motoristaRepository.SaveChangesAsync();
         }
@@ -80,7 +90,7 @@ namespace LogTruck.Application.Services
 
             if (!motorista.Any())
             {
-                _notifier.Handle(new Notification("Erro", "Motorista não encontrado."));
+                NotifyError("Motorista não encontrado.");
                 return;
             }
 
@@ -88,7 +98,7 @@ namespace LogTruck.Application.Services
 
             if (await MotoristaTemViagemEmAndamento(motoristaParaDeletar))
             {
-                _notifier.Handle(new Notification("Erro", "Não é possível deletar o motorista, pois ele possui viagens em andamento."));
+                NotifyError("Não é possível deletar o motorista, pois ele possui viagens em andamento.");
                 return;
             }
 
@@ -143,13 +153,13 @@ namespace LogTruck.Application.Services
             var motorista = await _motoristaRepository.GetFirstAsync(x => x.Id == id);
             if (motorista == null)
             {
-                _notifier.Handle(new Notification("Erro", "Motorista não encontrado."));
+                NotifyError("Motorista não encontrado.");
                 return;
             }
 
             if (motorista.Ativo)
             {
-                _notifier.Handle(new Notification("Erro", "Motorista ja está ativo."));
+                NotifyError("Motorista ja está ativo.");
                 return;
             }
 

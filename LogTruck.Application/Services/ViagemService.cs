@@ -8,34 +8,43 @@ using Mapster;
 
 namespace LogTruck.Application.Services
 {
-    public class ViagemService : IViagemService
+    public class ViagemService : BaseService, IViagemService
     {
         private readonly IViagemRepository _viagemRepository;
         private readonly IMotoristaRepository _motoristaRepository;
         private readonly ICaminhaoRepository _caminhaoRepository;
         private readonly IComissaoRepository _comissaoRepository;
-        private readonly INotifier _notifier;
 
         public ViagemService(INotifier notifier,
                             IViagemRepository viagemRepository,
                              IMotoristaRepository motoristaRepository,
                              ICaminhaoRepository caminhaoRepository,
-                             IComissaoRepository comissaoRepository)
+                             IComissaoRepository comissaoRepository) : base(notifier)
         {
             _viagemRepository = viagemRepository;
             _motoristaRepository = motoristaRepository;
             _caminhaoRepository = caminhaoRepository;
             _comissaoRepository = comissaoRepository;
-            _notifier = notifier;
         }
 
         public async Task CriarAsync(CreateViagemDto dto)
         {
-            var motorista = await _motoristaRepository.GetByIdAsync(dto.MotoristaId)
-                             ?? throw new KeyNotFoundException("Motorista não encontrado.");
+            var motorista = await _motoristaRepository.GetByIdAsync(dto.MotoristaId);
 
-            var caminhao = await _caminhaoRepository.GetByIdAsync(dto.CaminhaoId)
-                            ?? throw new KeyNotFoundException("Caminhão não encontrado.");
+            if (motorista is null)
+            {
+                NotifyError("Motorista não encontrado");
+                return;
+            }
+
+            var caminhao = await _caminhaoRepository.GetByIdAsync(dto.CaminhaoId);
+
+            if (caminhao is null)
+            {
+                NotifyError("Caminhão não encontrado");
+                return;
+            }
+
             if (!await ValidaCaminhaoEViagem(dto.MotoristaId, dto.CaminhaoId))
                 return;
 
@@ -57,7 +66,7 @@ namespace LogTruck.Application.Services
 
             if (viagemMotoristaEmAndamento != null)
             {
-                _notifier.Handle(new Notification("Erro", "O motorista já possui uma viagem em andamento."));
+                NotifyError("O motorista já possui uma viagem em andamento");
                 return false;
             }
 
@@ -68,7 +77,7 @@ namespace LogTruck.Application.Services
 
             if (viagemCaminhaoEmAndamento != null)
             {
-                _notifier.Handle(new Notification("Erro", "O caminhão já está em uma viagem em andamento."));
+                NotifyError("O caminhão já está em uma viagem em andamento");
                 return false;
             }
 
@@ -88,16 +97,26 @@ namespace LogTruck.Application.Services
 
         public async Task<ViagemDto> ObterPorIdAsync(Guid id)
         {
-            var viagem = await _viagemRepository.GetByIdAsync(id)
-                          ?? throw new KeyNotFoundException("Viagem não encontrada.");
+            var viagem = await _viagemRepository.GetByIdAsync(id);
+
+            if (viagem is null)
+            {
+                NotifyError("Viagem não encontrada");
+                return null;
+            }
 
             return viagem.Adapt<ViagemDto>();
         }
 
         public async Task AtualizarAsync(UpdateViagemDto dto)
         {
-            var viagem = await _viagemRepository.GetByIdAsync(dto.Id)
-                          ?? throw new KeyNotFoundException("Viagem não encontrada.");
+            var viagem = await _viagemRepository.GetByIdAsync(dto.Id);
+
+            if (viagem is null)
+            {
+                NotifyError("Viagem não encontrada");
+                return;
+            }
             dto.Adapt(viagem);
             _viagemRepository.Update(viagem);
             await _viagemRepository.SaveChangesAsync();
@@ -106,28 +125,32 @@ namespace LogTruck.Application.Services
 
         public async Task AtualizarStatusViagem(Guid idViagem, int statusViagem)
         {
-            var viagem = await _viagemRepository.GetByIdAsync(idViagem)
-                          ?? throw new KeyNotFoundException("Viagem não encontrada.");
+            var viagem = await _viagemRepository.GetByIdAsync(idViagem);
+
+            if (viagem is null)
+            {
+                NotifyError("Viagem não encontrada");
+                return;
+            }
 
             if (viagem.Status == StatusViagem.Concluida && statusViagem != (int)StatusViagem.Concluida)
             {
-                _notifier.Handle(new Notification("Erro", "Não é possível alterar o status de uma viagem já concluída."));
+                NotifyError("Não é possível alterar o status de uma viagem já concluída.");
                 return;
             }
 
             if (viagem.Status == StatusViagem.Cancelada)
             {
-                _notifier.Handle(new Notification("Erro", "Não é possível alterar o status de uma viagem cancelada."));
+                NotifyError("Não é possível alterar o status de uma viagem cancelada.");
                 return;
             }
 
             if ((int)viagem.Status == statusViagem)
             {
-                _notifier.Handle(new Notification("Erro", "A viagem já está com o status informado."));
+                NotifyError("A viagem já está com o status informado.");
                 return;
             }
 
-            // Validação de transições permitidas
             bool transicaoValida = false;
             switch (viagem.Status)
             {
@@ -148,7 +171,7 @@ namespace LogTruck.Application.Services
 
             if (!transicaoValida)
             {
-                _notifier.Handle(new Notification("Erro", "Transição de status inválida para a viagem."));
+                NotifyError("Transição de status inválida para a viagem.");
                 return;
             }
 
@@ -174,8 +197,12 @@ namespace LogTruck.Application.Services
 
         public async Task CancelarAsync(Guid id)
         {
-            var viagem = await _viagemRepository.GetByIdAsync(id)
-                          ?? throw new KeyNotFoundException("Viagem não encontrada.");
+            var viagem = await _viagemRepository.GetByIdAsync(id);
+
+            if (viagem is null)
+            {
+                NotifyError("Viagem não encontrada");
+            }
 
             viagem.Cancelar();
 

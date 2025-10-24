@@ -4,7 +4,7 @@ namespace LogTruck.Application.Common.Notifications
 {
     public interface INotifier
     {
-        void Handle(Notification notification);
+        void Handle(string key, string message);
         List<Notification> GetNotifications();
         bool HasNotification();
         void Clear();

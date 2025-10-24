@@ -1,4 +1,5 @@
 ﻿using Asp.Versioning;
+using Azure;
 using LogTruck.Application.Common.Notifications;
 using LogTruck.Application.DTOs.CustoViagem;
 using LogTruck.Application.Interfaces.Services;
@@ -21,26 +22,30 @@ namespace LogTruck.API.Controllers.v1
         }
 
         [HttpGet("{id:guid}")]
+        [ProducesResponseType(typeof(CustoViagemDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CustoViagemDto), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetById(Guid id)
         {
-            var custos = await _custoViagemService.ObterPorIdAsync(id);
-            return Ok(custos);
+            var response = await _custoViagemService.ObterPorIdAsync(id);
+            return CustomResponse(response);
         }
 
         [HttpGet("{idViagem:guid}")]
         [ProducesResponseType(typeof(IEnumerable<CustoViagemDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<CustoViagemDto>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetByViagemId(Guid idViagem)
         {
-            var custo = await _custoViagemService.ObterPorViagemAsync(idViagem);
-            return custo is not null ? Ok(custo) : NotFound();
+            var response = await _custoViagemService.ObterPorViagemAsync(idViagem);
+
+            return CustomResponse(response);
         }
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateCustoViagemDto dto)
         {
-            await _custoViagemService.AdicionarAsync(dto);
+            var response = await _custoViagemService.AdicionarAsync(dto);
 
-            return CustomResponse();
+            return CustomResponse(CreatedAtAction(nameof(GetById), new { id = response.Id }, response), 201);
         }
 
         [HttpPut("{id:guid}")]
@@ -49,14 +54,14 @@ namespace LogTruck.API.Controllers.v1
             if (id != dto.Id) return BadRequest("ID da URL difere do corpo da requisição.");
 
             await _custoViagemService.AtualizarAsync(dto);
-            return NoContent();
+            return CustomNoContentResponse();
         }
 
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {
             await _custoViagemService.RemoverAsync(id);
-            return CustomResponse();
+            return CustomNoContentResponse();
         }
 
         [HttpGet("completo")]

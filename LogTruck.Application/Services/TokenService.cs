@@ -52,7 +52,6 @@ public class TokenService
         }
         catch (Exception ex)
         {
-            // Adicione logging aqui
             throw new InvalidOperationException("Erro ao gerar token JWT", ex);
         }
     }

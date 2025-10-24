@@ -1,4 +1,5 @@
-﻿using LogTruck.Application.Common.Security;
+﻿using LogTruck.Application.Common.Notifications;
+using LogTruck.Application.Common.Security;
 using LogTruck.Application.DTOs.Caminhao;
 using LogTruck.Application.Interfaces.Repositories;
 using LogTruck.Application.Interfaces.Services;
@@ -7,13 +8,13 @@ using Mapster;
 
 namespace LogTruck.Application.Services
 {
-    public class CaminhaoService : ICaminhaoService
+    public class CaminhaoService : BaseService ,ICaminhaoService
     {
         private readonly ICaminhaoRepository _caminhaoRepository;
         private readonly ICurrentUserService _currentUserService;
         private Guid _usuarioAlteracao;
 
-        public CaminhaoService(ICaminhaoRepository caminhaoRepository, ICurrentUserService currentUserService)
+        public CaminhaoService(INotifier notifier, ICaminhaoRepository caminhaoRepository, ICurrentUserService currentUserService) : base(notifier)
         {
             _caminhaoRepository = caminhaoRepository;
             _currentUserService = currentUserService;
@@ -28,23 +29,34 @@ namespace LogTruck.Application.Services
 
         public async Task<CaminhaoDto> ObterPorIdAsync(Guid id)
         {
-            var caminhao = await _caminhaoRepository.GetByIdAsync(id)
-                            ?? throw new KeyNotFoundException("Caminhão não encontrado.");
+            var caminhao = await _caminhaoRepository.GetByIdAsync(id);
+
+            if (caminhao is null)
+            {
+                NotifyError("Caminhao não encontrado");
+                return null;
+            }
 
             return caminhao.Adapt<CaminhaoDto>();
         }
 
-        public async Task<Guid> CriarAsync(CreateCaminhaoDto dto)
+        public async Task<CaminhaoDto> CriarAsync(CreateCaminhaoDto dto)
         {
             var caminhao = dto.Adapt<Caminhao>();
             await _caminhaoRepository.AddAsync(caminhao);
-            return caminhao.Id;
+
+            return caminhao.Adapt<CaminhaoDto>();
         }
 
         public async Task AtualizarAsync(Guid id, UpdateCaminhaoDto dto)
         {
-            var caminhao = await _caminhaoRepository.GetByIdAsync(id)
-                            ?? throw new KeyNotFoundException("Caminhao não encontrado");
+            var caminhao = await _caminhaoRepository.GetByIdAsync(id);
+
+            if (caminhao is null)
+            {
+                NotifyError("Caminhao não encontrado");
+                return ;
+            }
 
             caminhao.Atualizar(dto.Marca, dto.Modelo, dto.Placa, dto.Ano, dto.CapacidadeToneladas);
 
@@ -54,8 +66,13 @@ namespace LogTruck.Application.Services
 
         public async Task DeletarAsync(Guid id)
         {
-            var caminhao = await _caminhaoRepository.GetByIdAsync(id)
-                            ?? throw new KeyNotFoundException("Caminhao não encontrado");
+            var caminhao = await _caminhaoRepository.GetByIdAsync(id);
+
+            if (caminhao is null)
+            {
+                NotifyError("Caminhao não encontrado");
+                return;
+            }
 
             caminhao.Desativar();
             _caminhaoRepository.Update(caminhao);

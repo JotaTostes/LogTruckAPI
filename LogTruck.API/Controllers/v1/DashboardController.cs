@@ -23,7 +23,7 @@ namespace LogTruck.API.Controllers.v1
         public async Task<IActionResult> ObterDados()
         {
             var resultado = await _dashboardService.ObterDadosAsync();
-            return Ok(resultado);
+            return CustomResponse(resultado);
         }
     }
 }

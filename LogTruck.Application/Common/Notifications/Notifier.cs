@@ -7,9 +7,9 @@ namespace LogTruck.Application.Common.Notifications
     {
         private readonly List<Notification> _notifications = new();
 
-        public void Handle(Notification notification)
+        public void Handle(string key, string message)
         {
-            _notifications.Add(notification);
+            _notifications.Add(new Notification(key,message));
         }
 
         public List<Notification> GetNotifications() => _notifications;
